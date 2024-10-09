@@ -5,7 +5,7 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 102191
+PARAM$semilla <- 524287
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
@@ -43,8 +43,8 @@ particionar <- function(
 setwd("~/buckets/b1/")
 
 # cargo los datos,  alternar comentario segun corresponda
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
-# dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
+#dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
