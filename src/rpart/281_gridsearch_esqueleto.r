@@ -54,7 +54,7 @@ setwd("~/buckets/b1/exp/HT2810/")
 tb_grid_search_detalle <- data.table(semilla = integer(), cp = numeric(), maxdepth = integer(), minsplit = integer(), minbucket = integer(), ganancia_test = numeric())
 
 # Primera pasada (búsqueda general)
-for (vmin_split in c(10,20,40,80,160,320,640)) {
+for (vmin_split in c(10, 20, 40, 80, 160, 320, 640)) {
   for (vmax_depth in seq(4, 16, by=2)) {
     for (v_cp in seq(-1, 0, by=0.2)) {
       for (v_minbucket in c(2,4,8,16,32,64)) {
@@ -72,6 +72,7 @@ for (vmin_split in c(10,20,40,80,160,320,640)) {
 # Resumen de la primera pasada
 tb_grid_search <- tb_grid_search_detalle[, list("ganancia_mean" = mean(ganancia_test), "qty" = .N), list(cp, maxdepth, minsplit, minbucket)]
 setorder(tb_grid_search, -ganancia_mean)
+
 
 # Selección de los mejores valores de cada hiperparámetro
 best_params <- tb_grid_search[1]
