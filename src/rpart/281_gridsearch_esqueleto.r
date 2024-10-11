@@ -81,6 +81,17 @@ opt_vmax_depth <- best_params$maxdepth
 opt_v_cp <- best_params$cp
 opt_v_minbucket <- best_params$minbucket
 
+#vmin_split--640
+#vmax_depth--4
+#cp---1
+#min?bucket--16
+#
+#for (vmin_split in c(10, 20, 40, 80, 160, 320, 640)) {
+#  for (vmax_depth in seq(4, 16, by=2)) {
+#    for (v_cp in seq(-1, 0, by=0.2)) {
+#      for (v_minbucket in c(2,4,8,16,32,64)) {
+
+
 # Definir rangos acotados para la segunda pasada
 vmin_split_range <- seq(opt_vmin_split - 9, opt_vmin_split + 9, by=2)
 vmax_depth_range <- seq(max(4, opt_vmax_depth - 2), opt_vmax_depth + 2, by=1)
