@@ -5,14 +5,14 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 102191
+PARAM$semilla <- 597361 #524287
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
-  "cp" = -1, # complejidad minima
-  "minsplit" = 170, # minima cantidad de regs en un nodo para hacer el split
-  "minbucket" = 70, # minima cantidad de regs en una hoja
-  "maxdepth" = 7 # profundidad máxima del arbol
+  "cp" = -0.1, # complejidad minima
+  "minsplit" = 631, # minima cantidad de regs en un nodo para hacer el split
+  "minbucket" = 250, #260, # minima cantidad de regs en una hoja
+  "maxdepth" = 4 # profundidad máxima del arbol
 )
 
 #------------------------------------------------------------------------------
@@ -21,6 +21,7 @@ PARAM$rpart <- list (
 
 # particionar( data=dataset, division=c(70,30),
 #  agrupa=clase_ternaria, seed=semilla)   crea una particion 70, 30
+
 
 particionar <- function(
     data, division, agrupa = "",
@@ -35,6 +36,18 @@ particionar <- function(
     by = agrupa
   ]
 }
+
+#particionar <- function(
+#    data, division, agrupa = "",
+#    campo = "fold", start = 1, seed = NA) {
+#  if (!is.na(seed)) set.seed(seed)
+#  data[, (campo) := {
+#    n <- .N
+#    tamanos <- ceiling(n * (division / 100))
+#    bloque <- unlist(mapply(function(x, y) rep(y, x), tamanos, seq(from = start, length.out = length(division))))
+#    sample(rep(bloque, length.out = n))[1:n]
+#  }, by = agrupa]
+#}
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
@@ -43,8 +56,8 @@ particionar <- function(
 setwd("~/buckets/b1/")
 
 # cargo los datos,  alternar comentario segun corresponda
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
-# dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
+#dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
@@ -57,6 +70,7 @@ particionar(dataset,
 )
 
 
+
 # genero el modelo
 # quiero predecir clase_ternaria a partir del resto
 # fold==1  es training,  el 70% de los datos
@@ -66,10 +80,12 @@ modelo <- rpart("clase_ternaria ~ .",
   control = PARAM$rpart # aqui van los parametros
 )
 
+prueba <-dataset[fold == 2]
+prueba2 <-prueba[, c("clase_ternaria", "fold")]
 
 # aplico el modelo a los datos de testing
 prediccion <- predict(modelo, # el modelo que genere recien
-  dataset[fold == 2], # fold==2  es testing, el 30% de los datos
+  prueba, # fold==2  es testing, el 30% de los datos
   type = "prob"
 ) # type= "prob"  es que devuelva la probabilidad
 
@@ -100,3 +116,6 @@ cat("Estimulos: ", estimulos, "\n")
 cat("Aciertos (BAJA+2): ", aciertos, "\n")
 
 cat("Ganancia en testing (normalizada): ", ganancia_test_normalizada, "\n")
+
+# Exportación del resumen final
+fwrite(dataset, file = "traintest.xls", sep = "\t")
