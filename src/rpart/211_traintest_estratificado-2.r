@@ -60,10 +60,11 @@ setwd("~/buckets/b1/")
 dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
-dataset <- dataset[clase_ternaria != ""]
+dataset1 <- dataset[clase_ternaria == ""]
+dataset2 <- dataset[clase_ternaria != ""]
 
 # particiono estratificadamente el dataset 70%, 30%
-particionar(dataset,
+particionar(dataset2,
   division = c(PARAM$training_pct, 100L -PARAM$training_pct), 
   agrupa = "clase_ternaria",
   seed = PARAM$semilla # aqui se usa SU semilla
@@ -75,16 +76,19 @@ particionar(dataset,
 # quiero predecir clase_ternaria a partir del resto
 # fold==1  es training,  el 70% de los datos
 modelo <- rpart("clase_ternaria ~ .",
-  data = dataset[fold == 1],
+  data = dataset2[fold == 1],
   xval = 0,
   control = PARAM$rpart # aqui van los parametros
 )
 
-prueba <-dataset[fold == 2]
+dataset1 = dataset1[, fold := 2]
+prueba <-dataset1
+prueba2 <-prueba[, c("clase_ternaria", "fold")]
+
 
 # aplico el modelo a los datos de testing
 prediccion <- predict(modelo, # el modelo que genere recien
-  dataset[fold == 2], # fold==2  es testing, el 30% de los datos
+  dataset1, # fold==2  es testing, el 30% de los datos
   type = "prob"
 ) # type= "prob"  es que devuelva la probabilidad
 
@@ -93,23 +97,23 @@ prediccion <- predict(modelo, # el modelo que genere recien
 # cada columna es el vector de probabilidades
 
 # agrego una columna que es la de las ganancias
-dataset[, ganancia := ifelse(clase_ternaria == "BAJA+2", 117000, -3000)]
+dataset1[, ganancia := ifelse(clase_ternaria == "BAJA+2", 117000, -3000)]
 
 # para testing agrego la probabilidad
-dataset[fold == 2, prob_baja2 := prediccion[, "BAJA+2"]]
+dataset1[fold == 2, prob_baja2 := prediccion[, "BAJA+2"]]
 
 # calculo la ganancia en testing  qu es fold==2
-ganancia_test <- dataset[fold == 2 & prob_baja2 > 0.025, sum(ganancia)]
+ganancia_test <- dataset1[fold == 2 & prob_baja2 > 0.025, sum(ganancia)]
 
 # escalo la ganancia como si fuera todo el dataset
 ganancia_test_normalizada <- ganancia_test / (( 100 - PARAM$training_pct ) / 100 )
 
-estimulos <- dataset[fold == 2 & prob_baja2 > 0.025, .N]
-aciertos <- dataset[fold == 2 & prob_baja2 > 0.025 & clase_ternaria == "BAJA+2", .N]
+estimulos <- dataset1[fold == 2 & prob_baja2 > 0.025, .N]
+aciertos <- dataset1[fold == 2 & prob_baja2 > 0.025 & clase_ternaria == "BAJA+2", .N]
 
 
-cat("Testing total: ", dataset[fold == 2, .N], "\n")
-cat("Testing BAJA+2: ", dataset[fold == 2 & clase_ternaria == "BAJA+2", .N], "\n")
+cat("Testing total: ", dataset1[fold == 2, .N], "\n")
+cat("Testing BAJA+2: ", dataset1[fold == 2 & clase_ternaria == "BAJA+2", .N], "\n")
 
 cat("Estimulos: ", estimulos, "\n")
 cat("Aciertos (BAJA+2): ", aciertos, "\n")
@@ -117,4 +121,4 @@ cat("Aciertos (BAJA+2): ", aciertos, "\n")
 cat("Ganancia en testing (normalizada): ", ganancia_test_normalizada, "\n")
 
 # Exportación del resumen final
-fwrite(dataset, file = "traintest.xls", sep = "\t")
+fwrite(dataset1, file = "traintest.csv", sep = "\t")
