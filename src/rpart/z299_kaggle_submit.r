@@ -11,9 +11,9 @@ PARAM$modalidad <- "vivencial"  # "conceptual"
 
 PARAM$rpart <- list (
   "cp" = -1,
-  "minsplit" = 170,
-  "minbucket" = 70,
-  "maxdepth" = 7
+  "minsplit" = 640,
+  "minbucket" = 64,
+  "maxdepth" = 6
 )
 
 #------------------------------------------------------------------------------
