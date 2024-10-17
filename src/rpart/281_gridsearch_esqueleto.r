@@ -12,7 +12,7 @@ require("primes")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 999931
+PARAM$semilla_primigenia <- 102191
 PARAM$qsemillas <- 20
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
@@ -148,10 +148,10 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
-      "cp" = -1, # complejidad minima
+      "cp" = -0.5, # complejidad minima
       "maxdepth" = vmax_depth, # profundidad máxima del arbol
       "minsplit" = vmin_split, # tamaño minimo de nodo para hacer split
-      "minbucket" = 32 # minima cantidad de registros en una hoja
+      "minbucket" = 5 # minima cantidad de registros en una hoja
     )
 
     # Un solo llamado, con la semilla 17
