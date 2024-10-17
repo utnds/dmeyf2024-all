@@ -1,20 +1,9 @@
-# Script prueba de submit Kaggle 
+# Script prueba de submit a las dos competencias Kaggle 
 
 # cargo las librerias que necesito
 require("data.table")
 require("rpart")
 require("yaml")
-
-PARAM <- list()
-
-PARAM$modalidad <- "vivencial"  # "conceptual"
-
-PARAM$rpart <- list (
-  "cp" = -1,
-  "minsplit" = 170,
-  "minbucket" = 70,
-  "maxdepth" = 7
-)
 
 #------------------------------------------------------------------------------
 
@@ -74,7 +63,7 @@ generarmodelo <- function( pmodalidad, param )
 
   # preparo todo para el submit
   comentario <- paste0( "'",
-      "cp=", param$cp,
+      "cp=-1",
       " minsplit=", param$minsplit,
       " minbucket=", param$minbucket,
       " maxdepth=", param$maxdepth,
@@ -111,6 +100,22 @@ if( !file.exists( "contador.yml" ) )
   write_yaml( contador, file="contador.yml" )
 }
 
+# genero al azar maxdepth, minsplit y minbucket
+param_vivencial <- list()
+set.seed( Sys.time() )
 
-# Genero modelo y submit a Kaggle
-generarmodelo( PARAM$modalidad, PARAM$rpart )
+# modelo vivencial
+param_vivencial$cp <- -1
+param_vivencial$maxdepth <- sample( 4:10, 1 )
+param_vivencial$minsplit <- sample( 50:500, 1 )
+param_vivencial$minbucket <- sample( 1:(param_vivencial$minsplit/2), 1 )
+gan_vivencial <- generarmodelo( "vivencial", param_vivencial )
+
+# ahora el modelo conceptual
+param_conceptual <- copy(param_vivencial)
+# para el dataet conceptual, minsplit y minbucket van a la quinta parte
+param_conceptual$minsplit <- round(param_conceptual$minsplit/5)
+param_conceptual$minbucket <- round(param_conceptual$minbucket/5)
+gan_conceptual <- generarmodelo( "conceptual", param_conceptual )
+
+quit( save="no" )
