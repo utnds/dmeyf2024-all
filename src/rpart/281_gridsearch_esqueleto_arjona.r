@@ -11,7 +11,7 @@ require("parallel")
 require("primes")
 
 PARAM <- list()
-PARAM$semilla_primigenia <- 524287
+PARAM$semilla_primigenia <- 122777
 PARAM$qsemillas <- 20
 PARAM$training_pct <- 70L
 PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
