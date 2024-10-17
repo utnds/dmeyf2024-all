@@ -14,7 +14,7 @@ PARAM <- list()
 PARAM$semilla_primigenia <- 122777
 PARAM$qsemillas <- 20
 PARAM$training_pct <- 70L
-PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
 
 particionar <- function(data, division, agrupa = "", campo = "fold", start = 1, seed = NA) {
   if (!is.na(seed)) set.seed(seed)
@@ -54,10 +54,10 @@ setwd("~/buckets/b1/exp/HT2810/")
 tb_grid_search_detalle <- data.table(semilla = integer(), cp = numeric(), maxdepth = integer(), minsplit = integer(), minbucket = integer(), ganancia_test = numeric())
 
 # Primera pasada (búsqueda general)
-for (vmin_split in c(10, 20, 40, 80, 160, 320, 640)) {
-  for (vmax_depth in seq(4, 16, by=2)) {
-    for (v_cp in seq(-1, 0, by=0.2)) {
-      for (v_minbucket in c(2,4,8,16,32,64)) {
+for (vmin_split in c(320,480,640,800)) {
+  for (vmax_depth in seq(6, 8, by=1)) {
+    for (v_cp in seq(-1, -0.6, by=0.2)) {
+      for (v_minbucket in c(32,48,64,80)) {
         if (v_minbucket < (vmin_split / 2)) {
           param_basicos <- list("cp" = v_cp, "maxdepth" = vmax_depth, "minsplit" = vmin_split, "minbucket" = v_minbucket)
           ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
@@ -68,6 +68,7 @@ for (vmin_split in c(10, 20, 40, 80, 160, 320, 640)) {
   }
   fwrite(tb_grid_search_detalle, file = "gridsearch_detalle.txt", sep = "\t")
 }
+
 
 # Resumen de la primera pasada
 tb_grid_search <- tb_grid_search_detalle[, list("ganancia_mean" = mean(ganancia_test), "qty" = .N), list(cp, maxdepth, minsplit, minbucket)]
