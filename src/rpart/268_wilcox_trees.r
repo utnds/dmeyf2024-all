@@ -11,7 +11,7 @@ require("ggplot2")
 PARAM <- list()
 # reemplazar por su primer semilla
 PARAM$semilla_primigenia <- 153071
-PARAM$qsemillas_tope <- 10
+PARAM$qsemillas_tope <- 50
 
 # elegir SU dataset comentando/ descomentando
 PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"

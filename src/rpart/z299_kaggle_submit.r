@@ -10,10 +10,10 @@ PARAM <- list()
 PARAM$modalidad <- "vivencial"  # "conceptual"
 
 PARAM$rpart <- list (
-  "cp" = -1,
-  "minsplit" = 170,
-  "minbucket" = 70,
-  "maxdepth" = 7
+  "cp" = -2,
+  "minsplit" = 625,
+  "minbucket" = 150,
+  "maxdepth" = 8
 )
 
 #------------------------------------------------------------------------------
