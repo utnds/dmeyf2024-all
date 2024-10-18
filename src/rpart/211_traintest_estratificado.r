@@ -5,7 +5,9 @@ require("data.table")
 require("rpart")
 
 PARAM <- list()
-PARAM$semilla <- 400009
+PARAM$semilla <- 353879
+
+
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
