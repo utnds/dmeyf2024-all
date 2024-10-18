@@ -31,16 +31,19 @@ getandincrement <- function( nom_archivo )
 generarmodelo <- function( pmodalidad, param )
 {
   # cargo el dataset pequeno
-  dataset <- fread( paste0("~/datasets/", pmodalidad, "_dataset_pequeno.csv" ) )
-
-  dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
-  dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
+  dataset <- fread( paste0("~/datasets/", pmodalidad, "_datos.csv" ) )
+ 
+ 
+ 
+ 
+  #dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
+  #dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
 
   # genero el modelo,  aqui se construye el arbol
   # quiero predecir clase_ternaria a partir de el resto de las variables
   modelo <- rpart(
       formula = "clase_ternaria ~ .",
-      data = dtrain, # los datos donde voy a entrenar
+      data = dataset, # los datos donde voy a entrenar
       xval = 0,
       control = param,
   )
