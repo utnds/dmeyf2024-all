@@ -73,49 +73,42 @@ for (vmin_split in c(10, 20, 40, 80, 160, 320, 640)) {
 tb_grid_search <- tb_grid_search_detalle[, list("ganancia_mean" = mean(ganancia_test), "qty" = .N), list(cp, maxdepth, minsplit, minbucket)]
 setorder(tb_grid_search, -ganancia_mean)
 
+
+# Selección de los mejores valores de cada hiperparámetro
+best_params <- tb_grid_search[1]
+opt_vmin_split <- best_params$minsplit
+opt_vmax_depth <- best_params$maxdepth
+opt_v_cp <- best_params$cp
+opt_v_minbucket <- best_params$minbucket
+
+# Definir rangos acotados para la segunda pasada
+vmin_split_range <- seq(opt_vmin_split - 9, opt_vmin_split + 9, by=2)
+vmax_depth_range <- seq(max(4, opt_vmax_depth - 2), opt_vmax_depth + 2, by=1)
+v_cp_range <- seq(opt_v_cp - 0.1, opt_v_cp + 0.1, by=0.05)
+v_minbucket_range <- seq(max(3, opt_v_minbucket - 4), minbucket_limit, by=1)
+
+# Segunda pasada (búsqueda más detallada)
+tb_grid_search_detalle_2 <- data.table(semilla = integer(), cp = numeric(), maxdepth = integer(), minsplit = integer(), minbucket = integer(), ganancia_test = numeric())
+
+for (vmin_split in vmin_split_range) {
+  for (vmax_depth in vmax_depth_range) {
+    for (v_cp in v_cp_range) {
+      for (v_minbucket in v_minbucket_range) {
+        if (v_minbucket < (vmin_split / 2)) {
+          param_basicos <- list("cp" = v_cp, "maxdepth" = vmax_depth, "minsplit" = vmin_split, "minbucket" = v_minbucket)
+          ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
+          tb_grid_search_detalle_2 <- rbindlist(list(tb_grid_search_detalle_2, rbindlist(ganancias)))
+        }
+      }
+    }
+  }
+  fwrite(tb_grid_search_detalle_2, file = "gridsearch_detalle_2.txt", sep = "\t")
+}
+
+# Resumen final
+tb_grid_search_final <- tb_grid_search_detalle_2[, list("ganancia_mean" = mean(ganancia_test), "qty" = .N), list(cp, maxdepth, minsplit, minbucket)]
+setorder(tb_grid_search_final, -ganancia_mean)
+tb_grid_search_final[, id := .I]
+
 # Exportación del resumen final
-fwrite(tb_grid_search, file = "gridsearch_final.txt", sep = "\t")
-
-
-#=========================================================================
-
-# # Selección de los mejores valores de cada hiperparámetro
-# best_params <- tb_grid_search[1]
-# opt_vmin_split <- best_params$minsplit
-# opt_vmax_depth <- best_params$maxdepth
-# opt_v_cp <- best_params$cp
-# opt_v_minbucket <- best_params$minbucket
-# 
-# # Definir rangos acotados para la segunda pasada
-# vmin_split_range <- seq(opt_vmin_split - 9, opt_vmin_split + 9, by=2)
-# vmax_depth_range <- seq(max(4, opt_vmax_depth - 2), opt_vmax_depth + 2, by=1)
-# v_cp_range <- seq(opt_v_cp - 0.1, opt_v_cp + 0.1, by=0.05)
-# v_minbucket_range <- seq(max(3, opt_v_minbucket - 4), minbucket_limit, by=1)
-# 
-# # Segunda pasada (búsqueda más detallada)
-# tb_grid_search_detalle_2 <- data.table(semilla = integer(), cp = numeric(), maxdepth = integer(), minsplit = integer(), minbucket = integer(), ganancia_test = numeric())
-# 
-# for (vmin_split in vmin_split_range) {
-#   for (vmax_depth in vmax_depth_range) {
-#     for (v_cp in v_cp_range) {
-#       for (v_minbucket in v_minbucket_range) {
-#         if (v_minbucket < (vmin_split / 2)) {
-#           param_basicos <- list("cp" = v_cp, "maxdepth" = vmax_depth, "minsplit" = vmin_split, "minbucket" = v_minbucket)
-#           ganancias <- ArbolesMontecarlo(PARAM$semillas, param_basicos)
-#           tb_grid_search_detalle_2 <- rbindlist(list(tb_grid_search_detalle_2, rbindlist(ganancias)))
-#         }
-#       }
-#     }
-#   }
-#   fwrite(tb_grid_search_detalle_2, file = "gridsearch_detalle_2.txt", sep = "\t")
-# }
-
-#=========================================================================
-
-# # Resumen final
-# tb_grid_search_final <- tb_grid_search_detalle_2[, list("ganancia_mean" = mean(ganancia_test), "qty" = .N), list(cp, maxdepth, minsplit, minbucket)]
-# setorder(tb_grid_search_final, -ganancia_mean)
-# tb_grid_search_final[, id := .I]
-# 
-# # Exportación del resumen final
-# fwrite(tb_grid_search_final, file = "gridsearch_final.txt", sep = "\t")
+fwrite(tb_grid_search_final, file = "gridsearch_final.txt", sep = "\t")
