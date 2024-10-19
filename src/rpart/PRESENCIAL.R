@@ -11,19 +11,19 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("hoy.csv")
 
-dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
-dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
+#dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
+#dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
 
 # genero el modelo,  aqui se construye el arbol
 # quiero predecir clase_ternaria a partir de el resto de las variables
 modelo <- rpart(
-    formula = "clase_ternaria ~ .",
-    data = dtrain, # los datos donde voy a entrenar
+    formula = "ganancia_mean",
+    data = dataset, # los datos donde voy a entrenar
     xval = 0,
     cp = -0.3, # esto significa no limitar la complejidad de los splits
-    minsplit = 0, # minima cantidad de registros para que se haga el split
+    minsplit = 2, # minima cantidad de registros para que se haga el split
     minbucket = 1, # tamaño minimo de una hoja
     maxdepth = 3  # profundidad maxima del arbol
 )
@@ -48,11 +48,11 @@ prediccion <- predict(
 # cada columna es el vector de probabilidades
 
 # agrego a dapply una columna nueva que es la probabilidad de BAJA+2
-#dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
+dapply[, prob_baja2 := prediccion[, "ganancia_mean"]]
 
 # solo le envio estimulo a los registros
 #  con probabilidad de BAJA+2 mayor  a  1/40
-#dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
+dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
