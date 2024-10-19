@@ -10,10 +10,10 @@ PARAM <- list()
 PARAM$modalidad <- "vivencial"  # "conceptual"
 
 PARAM$rpart <- list (
-  "cp" = -0.999,
-  "minsplit" = 100,  # 10
-  "minbucket" = 5,  # entre 5 o 10
-  "maxdepth" = 10
+  "cp" = -1,
+  "minsplit" = 17, 
+  "minbucket" = 17,  
+  "maxdepth" = 14
 )
 
 #------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ getandincrement <- function( nom_archivo )
 generarmodelo <- function( pmodalidad, param )
 {
   # cargo el dataset pequeno
-  dataset <- fread( paste0("~/datasets/", pmodalidad, "_datos.csv" ) )
+  dataset <- fread( paste0("~/datasets/", pmodalidad, "_dataset_pequeno.csv" ) )
  
  
  
