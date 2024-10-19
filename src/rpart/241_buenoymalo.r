@@ -10,28 +10,28 @@ require("ggplot2")
 
 PARAM <- list()
 # reemplazar por su primer semilla
-PARAM$semilla_primigenia <- 102191
-PARAM$qsemillas_tope <- 50
+PARAM$semilla_primigenia <- 524287
+PARAM$qsemillas <- 20
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
-PARAM$training_pct <- 50L  # entre  1L y 99L 
+PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart1 <- list (
   "cp" = -1,
-  "minsplit" = 800,
-  "minbucket" = 400,
+  "minsplit" = 170,
+  "minbucket" = 70,
   "maxdepth" = 7
 )
 
 
 PARAM$rpart2 <- list (
   "cp" = -1,
-  "minsplit" = 650,
-  "minbucket" = 300,
-  "maxdepth" = 6
+  "minsplit" = 250,
+  "minbucket" = 125,
+  "maxdepth" = 20
 )
 
 
@@ -121,59 +121,16 @@ DosArbolesEstimarGanancia <- function(semilla, training_pct, param_rpart1, param
   ))
 }
 #------------------------------------------------------------------------------
-# 1  ->  el modelo 1 es mejor
-# 2  ->  el modelo 2 es mejor
-# 0  ->  No se pudo determinar con el tope de qsemillas_tope
-
-
-MejorArbol <- function( qsemillas_tope, training_pct, param_rpart1, param_rpart2) {
-
-  # genero numeros primos
-  primos <- generate_primes(min = 100000, max = 1000000)
-  set.seed(PARAM$semilla_primigenia) # inicializo 
-  # me quedo con PARAM$qsemillas   semillas
-  semillas <- sample(primos, qsemillas_tope )
-
-  pvalue <- 1.0
-  isem <- 1
-  vgan1 <- c() # almaceno ganancias del modelo1
-  vgan2 <- c() # almaceno ganancias del modelo2
-
-  while( (isem <= qsemillas_tope)  & (pvalue > 0.05) ) {
-
-    res <- DosArbolesEstimarGanancia(
-       semillas[ isem ],
-       training_pct,
-       param_rpart1,
-       param_rpart2
-    )
-
-    vgan1 <- c( vgan1, res$ganancia1 )
-    vgan2 <- c( vgan2, res$ganancia2 )
-
-    wt <- wilcox.test( vgan1, vgan2, paired=TRUE )
-    pvalue <- wt$p.value
-
-    cat( isem, res$ganancia1, res$ganancia2, pvalue, "\n" )
-    isem <- isem + 1
-  }
-
-  out <- 0
-  
-  if( pvalue < 0.05 & mean(vgan1) > mean(vgan2)  )  out <- 1
-  if( pvalue < 0.05 & mean(vgan1) < mean(vgan2)  )  out <- 2
-
-
-  return( list( "out" = out, 
-    "qsemillas" = length(vgan1),
-    "m1" = mean( vgan1 ),
-    "m2" = mean( vgan2 )
-   ) )
-}
-#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
+
+
+# genero numeros primos
+primos <- generate_primes(min = 100000, max = 1000000)
+set.seed(PARAM$semilla_primigenia) # inicializo 
+# me quedo con PARAM$qsemillas   semillas
+PARAM$semillas <- sample(primos, PARAM$qsemillas )
 
 
 # cargo los datos
@@ -183,17 +140,42 @@ dataset <- fread(PARAM$dataset_nom)
 dataset <- dataset[clase_ternaria != ""]
 
 
-dir.create("~/buckets/b1/exp/EX2680", showWarnings = FALSE)
-setwd("~/buckets/b1/exp/EX2680")
+dir.create("~/buckets/b1/exp/EX2410", showWarnings = FALSE)
+setwd("~/buckets/b1/exp/EX2410")
 
 
-comparacion <- MejorArbol(
-   PARAM$qsemillas_tope,
-   PARAM$training_pct,
-   PARAM$rpart1,
-   PARAM$rpart2
- )
+# la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
+#  tantas veces como valores tenga el vector  PARAM$semillas
+salidas <- mcmapply(DosArbolesEstimarGanancia,
+  PARAM$semillas, # paso el vector de semillas
+  MoreArgs = list(PARAM$training_pct, PARAM$rpart1, PARAM$rpart2), # aqui paso el segundo parametro
+  SIMPLIFY = FALSE,
+  mc.cores = detectCores()
+)
 
 
-print( comparacion )
+# paso la lista a vector
+tb_salida <- rbindlist(salidas)
+
+
+
+
+# grafico densidades
+
+grafico <- ggplot( tb_salida, aes(x=ganancia1)) + geom_density(alpha=0.25)  +
+             geom_density(data=tb_salida, aes(x=ganancia2), fill="purple", color="purple",  alpha=0.10)
+
+pdf("densidad_dos.pdf")
+print(grafico)
+dev.off()
+
+
+print( tb_salida[ , list( "arbol1" = mean( ganancia1),  "arbol2" = mean(ganancia2) ) ] )
+
+print( tb_salida[ , list( "prob( m1 > m2)" = sum(ganancia1 > ganancia2 )/ .N ) ]  )
+
+
+# wt <- wilcox.test(  tb_salida$ganancia1,  tb_salida$ganancia2 )
+# cat( "Wilcoxon Test p-value ", wt$p.value, "\n" )
+
 

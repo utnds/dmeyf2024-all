@@ -4,14 +4,17 @@ gc() # Garbage Collection
 require("data.table")
 require("rpart")
 require("parallel")
+require("primes")
+
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(102191, 200177, 410551, 552581, 892237)
+PARAM$semilla_primigenia <- 524287
+PARAM$qsemillas <- 100
 
 # elegir SU dataset comentando/ descomentando
-PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+#PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
@@ -97,6 +100,14 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
 
+
+# genero numeros primos
+primos <- generate_primes(min = 100000, max = 1000000)
+set.seed(PARAM$semilla_primigenia) # inicializo 
+# me quedo con PARAM$qsemillas   semillas
+PARAM$semillas <- sample(primos, PARAM$qsemillas )
+
+
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
 
@@ -120,12 +131,9 @@ salidas
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
-print( tb_salida )
 
-# finalmente calculo la media (promedio)  de las ganancias
-cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
+for( i in seq(10, 100, 10) )
+{
+  cat( i, "\t", tb_salida[ 1:i, mean(ganancia_test)], "\n" )
+}
 
-# calculo todos los promedios
-cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )
-
-# desvio estandar Distribucion Binomial   sqrt( n * p * (1-p) )
