@@ -144,10 +144,10 @@ tb_grid_search_detalle <- data.table(
 
 # minsplit>=2*minbucket
 
-for (vmin_split in c(100, 50, 20, 10)) {
-  for (vmax_depth in c(4, 6, 8, 10)) {
-    for (v_cp in c(-0.9, -0.1)) {
-      for (v_minbucket in c(4, 6,8,10,20)) {
+for (vmin_split in c(1000,800,600,400,200,100,50)) {
+  for (vmax_depth in c(4, 5, 6, 7, 8)) {
+    for (v_cp in c(-1,-0.5)) {
+      for (v_minbucket in c(10,20,50,60,80,100,200,400)) {
         # Condición: minsplit >= 2 * minbucket
         if (vmin_split < 2 * v_minbucket) {
           next  # Salta a la siguiente iteración si no cumple la condición
