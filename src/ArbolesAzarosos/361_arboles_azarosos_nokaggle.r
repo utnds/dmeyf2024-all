@@ -14,8 +14,8 @@ PARAM$experimento <- 3610
 # Parametros rpart
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 640,
-  "minbucket" = 32,
+  "minsplit" = 25,
+  "minbucket" = 10,
   "maxdepth" = 4
 )
 
@@ -46,7 +46,7 @@ setwd(carpeta_experimento)
 # Estratificación del dataset 202107 para generar dtrain y dapply
 set.seed(123)  # Establezco semilla para reproducibilidad
 dtrain_index <- createDataPartition(dataset[foto_mes == 202107]$clase_ternaria, 
-                                    p = 0.7, list = FALSE)  # 70% para entrenamiento
+                                    p = 0.5, list = FALSE)  # 50% para entrenamiento
 dtrain <- dataset[foto_mes == 202107][dtrain_index]
 dapply <- dataset[foto_mes == 202107][-dtrain_index]
 
@@ -63,7 +63,7 @@ campos_buenos <- copy(setdiff(colnames(dtrain), c("clase_ternaria")))
 # Genero las salidas
 for (icorrida in seq(nrow(PARAM$rpart))) {
   
-  cat("Corrida ", icorrida, " ; ")
+  cat("Corrida ", icorrida, " ; \n")
   
   # Acumulo la probabilidad del ensemble
   dapply[, prob_acumulada := 0]
@@ -104,7 +104,6 @@ for (icorrida in seq(nrow(PARAM$rpart))) {
       ganancia <- sum(entrega$Predicted) * 20000  # Este es un ejemplo
       cat("Ganancia: ", ganancia, "\t", arbolito, "\n")
     }
-    
-    #cat(arbolito, " ")
+  
   }
 }
