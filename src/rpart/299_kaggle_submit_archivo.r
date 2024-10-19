@@ -10,7 +10,7 @@ PARAM <- list()
 PARAM$modalidad <- "conceptual"
 
 # Leer archivo de parámetros
-param_file <- "/home/sebastiancendra/buckets/b1/exp/HT2810/kag2.txt"
+param_file <- "/home/sebastiancendra/buckets/b1/exp/HT2810-/HT348.txt"
 param_data <- fread(param_file)
 
 # Función para incrementar el contador y leer/escribir YAML
