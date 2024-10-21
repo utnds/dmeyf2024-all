@@ -1,6 +1,4 @@
-# Ranger  una librería que implementa el algoritmo Random Forest
-
-# limpio la memoria
+# Librerias necesarias
 rm(list = ls()) # Borro todos los objetos
 gc() # Garbage Collection
 
@@ -52,23 +50,25 @@ setorder(dtrain, clase_ternaria)
 dapply[, clase_ternaria := NULL]
 dapply <- na.roughfix(dapply)
 
-# Iterar sobre los 20 primeros parámetros y hacer submits a Kaggle
-for (i in 1:nrow(param_data)) {
-  # Extraer hiperparámetros para esta iteración
-  num_trees <- param_data[i, num_trees]
-  mtry <- param_data[i, mtry]
-  min_node_size <- param_data[i, min_node_size]
-  max_depth <- param_data[i, max_depth]
+# Defino una función para entrenar el modelo y hacer la subida a Kaggle
+train_and_submit <- function(param_row, iter_num) {
+  # Reemplazo los hiperparámetros de Random Forest con los valores del archivo
+  PARAM$ranger <- list(
+    "num.trees" = param_row$num_trees,
+    "mtry" = param_row$mtry,
+    "min.node.size" = param_row$min_node_size,
+    "max.depth" = param_row$max_depth
+  )
   
-  # Generar el modelo de Random Forest con los hiperparámetros del archivo
+  # Genero el modelo de Random Forest con los hiperparámetros del archivo
   modelo <- ranger(
     formula = "clase_ternaria ~ .",
     data = dtrain,
     probability = TRUE,
-    num.trees = num_trees,
-    mtry = mtry,
-    min.node.size = min_node_size,
-    max.depth = max_depth
+    num.trees = PARAM$ranger$num.trees,
+    mtry = PARAM$ranger$mtry,
+    min.node.size = PARAM$ranger$min.node.size,
+    max.depth = PARAM$ranger$max.depth
   )
   
   # Aplicar el modelo a dapply
@@ -81,17 +81,17 @@ for (i in 1:nrow(param_data)) {
   ))
   
   # Crear el nombre del archivo de Kaggle con el número de iteración
-  nom_arch_kaggle <- paste0("KA3720_", sprintf("%03d", i), ".csv")
+  nom_arch_kaggle <- paste0("KA3720_", sprintf("%03d", iter_num), ".csv")
   
   # Guardar la entrega
   fwrite(entrega, file = nom_arch_kaggle, sep = ",")
   
   # Preparar y ejecutar el comando para subir a Kaggle
   comentario <- paste0(
-    "'num.trees=", num_trees, 
-    " mtry=", mtry, 
-    " min.node.size=", min_node_size, 
-    " max.depth=", max_depth, "'"
+    "'num.trees=", PARAM$ranger$num.trees, 
+    " mtry=", PARAM$ranger$mtry, 
+    " min.node.size=", PARAM$ranger$min.node.size, 
+    " max.depth=", PARAM$ranger$max.depth, "'"
   )
   
   comando <- paste0(
@@ -101,8 +101,14 @@ for (i in 1:nrow(param_data)) {
     comentario
   )
   
+  # Ejecutar el comando para subir la predicción y capturar la ganancia
   ganancia <- system(comando, intern = TRUE)
   
   # Registrar la ganancia y el archivo generado
   cat(paste0(ganancia, "\t", nom_arch_kaggle, "\n"), file = "tb_ganancias.txt", append = TRUE)
+}
+
+# Iterar sobre los 20 primeros parámetros y hacer submits a Kaggle
+for (i in 1:nrow(param_data)) {
+  train_and_submit(param_data[i], i)
 }
