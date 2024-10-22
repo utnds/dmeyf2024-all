@@ -48,11 +48,11 @@ prediccion <- predict(
 # cada columna es el vector de probabilidades
 
 # agrego a dapply una columna nueva que es la probabilidad de BAJA+2
-#dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
+dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
 
 # solo le envio estimulo a los registros
 #  con probabilidad de BAJA+2 mayor  a  1/40
-#dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
+dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
