@@ -14,6 +14,14 @@ param_file <- "/home/sebastiancendra/buckets/b1/exp/HT3740/HT3740.txt"
 param_data <- fread(param_file)
 param_data <- param_data[order(-ganancia)][1:20]
 
+# Convertir los valores necesarios a numéricos (por si fueron leídos como texto)
+param_data[, `:=`(
+  num.trees = as.numeric(num.trees),
+  max.depth = as.numeric(max.depth),
+  min.node.size = as.numeric(min.node.size),
+  mtry = as.numeric(mtry)
+)]
+
 # Establezco el Working Directory
 setwd("~/buckets/b1/")
 
@@ -41,23 +49,45 @@ if ("Visa_Finiciomora" %in% colnames(dataset)) {
 dtrain <- dataset[foto_mes == 202107]
 dapply <- dataset[foto_mes == 202109]
 
-# Imputo los nulos en dtrain y ranger necesita la clase de tipo factor
-dtrain <- na.roughfix(dtrain)
+# Ranger necesita la clase de tipo factor
 dtrain[, clase_ternaria := as.factor(clase_ternaria)]
-setorder(dtrain, clase_ternaria)
+
+# Convertir las columnas de dtrain a numéricas o factores
+# Se excluye la columna 'clase_ternaria' ya que es un factor
+cols_to_convert <- setdiff(colnames(dtrain), "clase_ternaria")
+dtrain[, (cols_to_convert) := lapply(.SD, function(x) {
+  if (is.character(x)) {
+    as.factor(x)  # Convertir a factor si es texto
+  } else {
+    as.numeric(x)  # Convertir a numérico si es otro tipo
+  }
+}), .SDcols = cols_to_convert]
+
+# Imputo los nulos en dtrain
+dtrain <- na.roughfix(dtrain)
 
 # Imputo nulos en dapply y elimino la columna de clase
 dapply[, clase_ternaria := NULL]
+cols_to_convert_apply <- colnames(dapply)
+dapply[, (cols_to_convert_apply) := lapply(.SD, function(x) {
+  if (is.character(x)) {
+    as.factor(x)
+  } else {
+    as.numeric(x)
+  }
+}), .SDcols = cols_to_convert_apply]
+
+# Imputo los nulos en dapply
 dapply <- na.roughfix(dapply)
 
-# Defino una función para entrenar el modelo y hacer la subida a Kaggle
-train_and_submit <- function(param_row, iter_num) {
+# Función para entrenar y hacer la subida a Kaggle
+train_and_submit <- function(param_row, iter_num, PARAM) {
   # Reemplazo los hiperparámetros de Random Forest con los valores del archivo
   PARAM$ranger <- list(
-    "num.trees" = param_row$num_trees,
-    "mtry" = param_row$mtry,
-    "min.node.size" = param_row$min_node_size,
-    "max.depth" = param_row$max_depth
+    "num.trees" = as.numeric(param_row$num.trees),
+    "mtry" = as.numeric(param_row$mtry),
+    "min.node.size" = as.numeric(param_row$min.node.size),
+    "max.depth" = as.numeric(param_row$max.depth)
   )
   
   # Genero el modelo de Random Forest con los hiperparámetros del archivo
@@ -110,5 +140,10 @@ train_and_submit <- function(param_row, iter_num) {
 
 # Iterar sobre los 20 primeros parámetros y hacer submits a Kaggle
 for (i in 1:nrow(param_data)) {
-  train_and_submit(param_data[i], i)
+  # Inicializar los parámetros antes de cada iteración
+  PARAM <- list()
+  PARAM$experimento <- 3720
+  PARAM$ranger <- list()  # Se actualizará en la función
+  
+  train_and_submit(param_data[i], i, PARAM)
 }
