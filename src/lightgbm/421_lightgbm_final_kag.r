@@ -74,7 +74,7 @@ dtrain <- lgb.Dataset(
 # Leo los parametros del archivo HT3740.txt
 param_file <- "/home/sebastiancendra/buckets/b1/exp/HT4220/HT4220.txt"
 parametros <- fread(param_file)
-parametros <- parametros[order(-ganancia)][1:20] #ordeno por ganancia y filtro los primeros 20 elementos
+parametros <- parametros[order(-ganancia)][21:40] #ordeno por ganancia y filtro los primeros 20 elementos
 
 # Itero sobre los primeros 20 registros
 for (i in 1:20) {
