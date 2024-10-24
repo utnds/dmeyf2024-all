@@ -50,10 +50,10 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 #  la letra L al final significa ENTERO
 # max.depth 0 significa profundidad infinita
 hs <- makeParamSet(
-  makeIntegerParam("num.trees", lower = 470L, upper = 520L),#("num.trees", lower = 20L, upper = 500L),
-  makeIntegerParam("max.depth", lower = 9L, upper = 17L),
-  makeIntegerParam("min.node.size", lower = 300L, upper = 500L),
-  makeIntegerParam("mtry", lower = 2L, upper = 17L)
+  makeIntegerParam("num.trees", lower = 20L, upper = 500L),
+  makeIntegerParam("max.depth", lower = 1L, upper = 30L),
+  makeIntegerParam("min.node.size", lower = 1L, upper = 1000L),
+  makeIntegerParam("mtry", lower = 2L, upper = 50L)
 )
 
 #------------------------------------------------------------------------------
