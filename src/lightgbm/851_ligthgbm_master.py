@@ -1,71 +1,90 @@
 import lightgbm as lgb
-import optuna
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedKFold
+import optuna
+import yaml
+import os
 
-# Cargar dataset
-df = pd.read_csv("~/datasets/conceptual_dataset_pequeno.csv", low_memory=False)  # Cargar el dataset
+# Función para calcular la ganancia
+def fganancia_logistic_lightgbm(y_true, y_pred, weights):
+    # Calcula las ganancias
+    ganancia_pos = 117000
+    ganancia_neg = -3000
+    vgan = np.where(weights == 1.0000002, ganancia_pos, 
+                    np.where(weights == 1.0000001, ganancia_neg, 
+                             ganancia_neg / 1.0))  # Ajusta según el undersampling
 
-semilla_prim = 524287
+    # Ordenar las probabilidades y calcular la ganancia
+    sorted_indices = np.argsort(-y_pred)
+    ganancia = np.sum(vgan[sorted_indices[:5000]])  # solo los 5000 mejores
 
-# Columnas a usar en el modelo
-campos_buenos = [col for col in df.columns if col not in ["clase_ternaria", "azar", "training"]]
+    return 'ganancia', ganancia, True  # El nombre debe ser el mismo que se usa en lgb
 
-# Undersampling de la clase "CONTINUA"
-np.random.seed(semilla_prim)  # Semilla de ejemplo
-df['azar'] = np.random.rand(len(df))
-df['training'] = 0
-undersampling = 1.0  # Definir tasa de undersampling
-df.loc[(df['foto_mes'].isin([202107])) & 
-       ((df['azar'] <= undersampling) | 
-        (df['clase_ternaria'].isin(['BAJA+1', 'BAJA+2']))), 'training'] = 1
-
-# Separar datos de entrenamiento
-dtrain = df[df['training'] == 1]
-X = dtrain[campos_buenos]
-y = dtrain['clase_ternaria'].apply(lambda x: 1 if x in ['BAJA+1', 'BAJA+2'] else 0)  # Convertir a binario
-
-# Convertir DataFrame a Dataset de LightGBM
-train_set = lgb.Dataset(X, label=y)
-
-# Configuración de hiperparámetros a optimizar
+# Función objetivo para la optimización
 def objective(trial):
-    params = {
-        'objective': 'binary',
-        'metric': 'binary_logloss',
-        'boosting_type': 'gbdt',
-        'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
-        'num_leaves': trial.suggest_int('num_leaves', 8, 1024),
-        'feature_fraction': trial.suggest_float('feature_fraction', 0.1, 1.0),
-        'min_data_in_leaf': trial.suggest_int('min_data_in_leaf', 1, 8000),
-        'envios': trial.suggest_int('envios', 5000, 15000),
-        'verbosity': -1,
-        'seed': semilla_prim,
-    }
+    learning_rate = trial.suggest_float("learning_rate", 0.01, 0.3)
+    num_leaves = trial.suggest_int("num_leaves", 8, 1024)
+    feature_fraction = trial.suggest_float("feature_fraction", 0.1, 1.0)
+    min_data_in_leaf = trial.suggest_int("min_data_in_leaf", 1, 8000)
+    envios = trial.suggest_int("envios", 5000, 15000)
 
-    # Cross-validation
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=202107)
+    # Crear dataset
+    dtrain = lgb.Dataset(data=X_train, label=y_train, weight=weights_train)
+
+    # Entrenamiento con validación cruzada
     cv_results = lgb.cv(
-        params,
-        train_set,  # Pasamos el objeto 'train_set' en vez de un DataFrame
-        num_boost_round=1000,
+        params={
+            'objective': 'binary',
+            'metric': 'custom',  # Este es un parámetro que indica el uso de la métrica personalizada
+            'learning_rate': learning_rate,
+            'num_leaves': num_leaves,
+            'feature_fraction': feature_fraction,
+            'min_data_in_leaf': min_data_in_leaf,
+            'verbosity': -1,
+            'max_bin': 31,
+            'num_iterations': 9999
+        },
+        train_set=dtrain,
+        num_boost_round=9999,
         nfold=5,
         stratified=True,
-        #n_iter_no_change=10,
-        seed=semilla_prim
+        #early_stopping_rounds=50,
+        #feval=lambda y_true, y_pred: fganancia_logistic_lightgbm(y_true.get_label(), y_pred, weights_train)
     )
 
-    # Verificar las claves devueltas por cv_results
-    print("Claves devueltas por lgb.cv():", cv_results.keys())
+    ganancia_normalizada = np.mean(cv_results['ganancia'])  # Cambiar 'custom' a 'ganancia'
+    return ganancia_normalizada
 
-    # Acceder al valor correcto
-    best_iteration = np.argmin(cv_results['binary_logloss-mean']) if 'binary_logloss-mean' in cv_results else np.argmin(cv_results['binary_logloss'])
-    return -cv_results['binary_logloss-mean'][best_iteration] if 'binary_logloss-mean' in cv_results else -cv_results['binary_logloss'][best_iteration]
+# Cargar el dataset
+dataset = pd.read_csv("~/datasets/conceptual_dataset_pequeno.csv") 
 
-# Optimización bayesiana con Optuna
+# Transformar la clase a binaria
+dataset['clase01'] = np.where(dataset['clase_ternaria'] == 'CONTINUA', 0, 1)
+
+# Undersampling
+np.random.seed(42)  # Para reproducibilidad
+dataset['azar'] = np.random.rand(len(dataset))
+undersampling_rate = 1.0  # Cambia esto según tu estrategia
+dataset['training'] = np.where(
+    (dataset['azar'] <= undersampling_rate) | 
+    (dataset['clase_ternaria'].isin(['BAJA+1', 'BAJA+2'])), 1, 0)
+
+# Definir campos de interés
+campos_buenos = dataset.columns.difference(['clase_ternaria', 'clase01', 'azar', 'training'])
+
+# Dividir en entrenamiento
+X_train = dataset[dataset['training'] == 1][campos_buenos].values
+y_train = dataset[dataset['training'] == 1]['clase01'].values
+weights_train = np.where(dataset['clase_ternaria'] == 'BAJA+2', 1.0000002, 
+                          np.where(dataset['clase_ternaria'] == 'BAJA+1', 1.0000001, 1.0))
+
+# Optimización bayesiana
 study = optuna.create_study(direction='maximize')
 study.optimize(objective, n_trials=150)
 
-# Resultados
-print(f"Best trial: {study.best_trial.params}")
+# Guardar los resultados
+if not os.path.exists('./exp/'):
+    os.makedirs('./exp/')
+with open('./exp/optimizacion_resultados.txt', 'w') as f:
+    for trial in study.trials:
+        f.write(f'Trial {trial.number}: {trial.value}\n')
