@@ -17,13 +17,12 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 170
-PARAM$finalmodel$learning_rate <- 0.0695
-PARAM$finalmodel$feature_fraction <- 0.3066
-PARAM$finalmodel$min_data_in_leaf <- 1820
-PARAM$finalmodel$num_leaves <- 1014
-
-PARAM$finalmodel$max_bin <- 40
+PARAM$finalmodel$num_iterations <- 195
+PARAM$finalmodel$learning_rate <- 0.0421574286047863
+PARAM$finalmodel$feature_fraction <- 0.250610458223909
+PARAM$finalmodel$min_data_in_leaf <- 5076
+PARAM$finalmodel$num_leaves <- 131
+PARAM$finalmodel$max_bin <- 100
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
