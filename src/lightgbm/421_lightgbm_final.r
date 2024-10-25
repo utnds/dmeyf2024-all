@@ -17,11 +17,17 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 1000
-PARAM$finalmodel$learning_rate <- 0.027
-PARAM$finalmodel$feature_fraction <- 0.8
-PARAM$finalmodel$min_data_in_leaf <- 76
-PARAM$finalmodel$num_leaves <- 8
+PARAM$finalmodel$num_iterations <- 133
+PARAM$finalmodel$learning_rate <- 0.1023
+PARAM$finalmodel$feature_fraction <- 0.7076
+PARAM$finalmodel$min_data_in_leaf <- 83
+PARAM$finalmodel$num_leaves <- 1242
+PARAM$finalmodel$max_depth <- 7
+PARAM$finalmodel$lambda_l2 <-489800637707915
+PARAM$finalmodel$lambda_l1 < 0.601292558874602
+PARAM$finalmodel$bagging_fraction <-0.993689925858991
+PARAM$finalmodel$bagging_freq <-2
+PARAM$finalmodel$min_gain_to_split <-0.827428049864831
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -164,7 +170,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(9000, 13500, by = 500)
+cortes <- seq(7000, 10500, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
