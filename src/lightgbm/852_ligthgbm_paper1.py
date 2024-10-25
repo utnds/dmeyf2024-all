@@ -33,6 +33,9 @@ sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
 
+# Lista para almacenar todos los hiperparámetros y sus resultados
+all_params = []
+
 # LightGBM
 def objective(trial):
     param = {
@@ -51,7 +54,7 @@ def objective(trial):
         'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 10),
         'lambda_l2': trial.suggest_uniform('lambda_l2', 0, 10),
         'min_split_gain': trial.suggest_uniform('min_split_gain', 0, 1),
-        'random_state': 524287,
+        'random_state': 42,
     }
     
     d_train = lgb.Dataset(x_train, label=y_train)
@@ -61,23 +64,20 @@ def objective(trial):
     pred_labels = np.where(y_pred >= 0.5, 1, 0)  # Convertir a etiquetas binarias
     accuracy = accuracy_score(y_train, pred_labels)
     
+    # Guardar todos los hiperparámetros y su rendimiento en el diccionario
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    param['accuracy'] = accuracy
+    param['fecha_hora'] = current_time
+    all_params.append(param)  # Agregar el diccionario a la lista
+    
     return accuracy
 
 # Configurar y ejecutar Optuna
 study = optuna.create_study(direction='maximize')
-study.optimize(objective, n_trials=200)
+study.optimize(objective, n_trials=100)
 
-# Guardar los mejores hiperparámetros en un archivo CSV
-best_params = study.best_params
-current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+# Convertir la lista de diccionarios a un DataFrame y guardar en un archivo CSV
+all_params_df = pd.DataFrame(all_params)
+all_params_df.to_csv('todos_los_hiperparametros.csv', index=False)
 
-# Crear un DataFrame con la fecha y los mejores hiperparámetros
-results_df = pd.DataFrame({
-    'fecha_hora': [current_time],
-    **{key: [value] for key, value in best_params.items()}
-})
-
-# Guardar en un archivo CSV
-results_df.to_csv('mejores_hiperparametros.csv', mode='a', header=not pd.io.common.file_exists('mejores_hiperparametros.csv'), index=False)
-
-print("Best hyperparameters saved:", best_params)
+print("All hyperparameters saved.")
