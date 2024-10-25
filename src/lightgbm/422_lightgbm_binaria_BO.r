@@ -50,11 +50,11 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
-  makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
+  makeNumericParam("learning_rate", lower = 0.01, upper = 0.16),
+  makeIntegerParam("num_leaves", lower = 900L, upper = 1024L),
+  makeNumericParam("feature_fraction", lower = 0.23333, upper = 0.9998),
+  makeIntegerParam("min_data_in_leaf", lower = 138L, upper = 2200L),
+  makeIntegerParam("envios", lower = 8700L, upper = 11200L)
 )
 
 #------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ EstimarGanancia_lightgbm <- function(x) {
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     verbosity = -100,
-    max_bin = 31, # por ahora, lo dejo fijo
+    max_bin = 100, # por ahora, lo dejo fijo // era 31, lo cambie a 100]
     num_iterations = 9999, # valor grande, lo limita early_stopping_rounds
     force_row_wise = TRUE, # para evitar warning
     seed = ksemilla_azar1
