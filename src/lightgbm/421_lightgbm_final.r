@@ -17,11 +17,15 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 948
-PARAM$finalmodel$learning_rate <- 0.0108405100090263
-PARAM$finalmodel$feature_fraction <- 0.701997002650955
-PARAM$finalmodel$min_data_in_leaf <- 1104
-PARAM$finalmodel$num_leaves <- 212
+#BORRAR EXTRA TREES
+
+PARAM$finalmodel$num_iterations <- 199 #eran 199 según max gan
+PARAM$finalmodel$learning_rate <- 0.0410677769284764
+PARAM$finalmodel$feature_fraction <- 0.273170420028178
+PARAM$finalmodel$min_data_in_leaf <- 611
+PARAM$finalmodel$num_leaves <- 977
+
+PARAM$finalmodel$extra_trees <- TRUE
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -117,7 +121,8 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = miAmbiente$semilla_primigenia
+    seed = miAmbiente$semilla_primigenia,
+    extra_trees = PARAM$finalmodel$extra_trees
   )
 )
 
@@ -185,6 +190,7 @@ for (envios in cortes) {
     " num_leaves=", PARAM$finalmodel$num_leaves,
     " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
     " feature_fraction=", PARAM$finalmodel$feature_fraction,
+    "extra_trees=", PARAM$finalmodel$extra_trees,
     "'"
   )
 
