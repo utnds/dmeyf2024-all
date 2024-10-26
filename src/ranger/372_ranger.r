@@ -19,7 +19,7 @@ PARAM$ranger <- list(
   "num.trees" = 217, # cantidad de arboles
   "mtry" = 4, # cantidad de atributos que participan en cada split
   "min.node.size" = 556, # tamaño minimo de las hojas
-  "max.depth" = 8 # 0 significa profundidad infinita
+  "max.depth" = 10 # 0 significa profundidad infinita
 )
 
 #------------------------------------------------------------------------------
