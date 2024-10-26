@@ -9,25 +9,25 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210"
+PARAM$experimento <- "KA4215A"
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 # Definición de hiperparámetros
-PARAM$finalmodel$num_iterations <- 760 #1000
-PARAM$finalmodel$learning_rate <- 0.082 #0.027
-PARAM$finalmodel$feature_fraction <- 0.85 #0.8
-PARAM$finalmodel$min_data_in_leaf <- 11 #76
-PARAM$finalmodel$num_leaves <- 144 #8
-PARAM$finalmodel$max_bin <- 244 #31
+PARAM$finalmodel$num_iterations <- 329 #1000
+PARAM$finalmodel$learning_rate <- 0.047 #0.027
+PARAM$finalmodel$feature_fraction <- 0.8 #0.8
+PARAM$finalmodel$min_data_in_leaf <- 8 #76
+PARAM$finalmodel$num_leaves <- 374 #8
+PARAM$finalmodel$max_bin <- 13 #31
 
 # Nuevos hiperparámetros a agregar
-PARAM$finalmodel$bagging_fraction <- 0.54489 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$bagging_freq <- 6 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l1 <- 0.1829 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l2 <- 0.13# Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$min_split_gain <- 0.0797 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$bagging_fraction <- 0.87 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$bagging_freq <- 10 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l1 <- 2.97 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l2 <- 629.14 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$min_split_gain <- 10.43 # Ejemplo de valor, ajusta según sea necesario
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
