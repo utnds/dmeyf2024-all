@@ -12,10 +12,6 @@ dataset = pd.read_csv("~/datasets/conceptual_dataset_pequeno.csv")
 # Filtrando por la columna 'foto_mes'
 dataset = dataset[dataset['foto_mes'] == 202107]
 
-# Verifica que el dataset no esté vacío
-if dataset.shape[0] == 0:
-    raise ValueError("El dataset está vacío después de aplicar el filtro por 'foto_mes'.")
-
 # Definiendo características y etiqueta
 X = dataset.drop(columns=['clase_ternaria'])
 y = dataset['clase_ternaria']
@@ -25,15 +21,12 @@ label_encoder = LabelEncoder()
 y = label_encoder.fit_transform(y)
 
 # Dividiendo el dataset en el conjunto de entrenamiento y el conjunto de prueba (estratificado)
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 # Escalado de características
 sc = StandardScaler()
 x_train = sc.fit_transform(x_train)
 x_test = sc.transform(x_test)
-
-# Lista para almacenar todos los hiperparámetros y sus resultados
-all_params = []
 
 # Función para calcular la ganancia
 def calcular_ganancia(y_true, y_pred, threshold=0.025):
@@ -43,11 +36,14 @@ def calcular_ganancia(y_true, y_pred, threshold=0.025):
         (prob_baja2 > threshold) & (y_true == 1), 117000,  # Ganancia por BAJA+2
         np.where(prob_baja2 > threshold, -3000, 0)  # Penalización por falsa predicción
     ))
-    ganancia_normalizada = ganancia / 0.3  # Ajuste por proporción de entrenamiento
+    ganancia_normalizada = ganancia / 0.2  # Ajuste por proporción de entrenamiento
     return ganancia_normalizada
 
 # Función objetivo para Optuna usando ganancia
 def objective(trial):
+    
+    d_train = lgb.Dataset(x_train, label=y_train)
+
     param = {
         'objective': 'multiclass',
         'metric': 'multi_logloss',
@@ -68,19 +64,12 @@ def objective(trial):
         #'random_state': 42,
     }
     
-    d_train = lgb.Dataset(x_train, label=y_train)
-    clf = lgb.train(param, d_train, valid_sets=[d_train])
     
+    clf = lgb.train(param, d_train, valid_sets=[d_train])
     
     # Predicción sobre el conjunto de prueba y obtener las probabilidades
     y_pred = clf.predict(x_test)
     ganancia = calcular_ganancia(y_test, y_pred)
-    
-    # Guardar todos los hiperparámetros y su rendimiento en el diccionario
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    param['ganancia'] = ganancia
-    param['fecha_hora'] = current_time
-    all_params.append(param)  # Agregar el diccionario a la lista
     
     return ganancia
 
