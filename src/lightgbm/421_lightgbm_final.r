@@ -16,14 +16,13 @@ PARAM$experimento <- "KA4210"
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
+PARAM$finalmodel$num_iterations <- 783 #1000
+PARAM$finalmodel$learning_rate <- 0.0085 #0.027
+PARAM$finalmodel$feature_fraction <- 0.597 #0.8
+PARAM$finalmodel$min_data_in_leaf <- 56 #76
+PARAM$finalmodel$num_leaves <- 3015 #8
 
-PARAM$finalmodel$num_iterations <- 1000 #1000
-PARAM$finalmodel$learning_rate <- 0.091 #0.027
-PARAM$finalmodel$feature_fraction <- 0.684 #0.8
-PARAM$finalmodel$min_data_in_leaf <- 50 #76
-PARAM$finalmodel$num_leaves <- 124 #8
-
-PARAM$finalmodel$max_bin <- 32 #31
+PARAM$finalmodel$max_bin <- 2 #31
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista

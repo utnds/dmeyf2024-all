@@ -25,7 +25,7 @@ label_encoder = LabelEncoder()
 y = label_encoder.fit_transform(y)
 
 # Dividiendo el dataset en el conjunto de entrenamiento y el conjunto de prueba (estratificado)
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
 
 # Escalado de características
 sc = StandardScaler()
@@ -43,7 +43,7 @@ def calcular_ganancia(y_true, y_pred, threshold=0.025):
         (prob_baja2 > threshold) & (y_true == 1), 117000,  # Ganancia por BAJA+2
         np.where(prob_baja2 > threshold, -3000, 0)  # Penalización por falsa predicción
     ))
-    ganancia_normalizada = ganancia / 0.2  # Ajuste por proporción de entrenamiento
+    ganancia_normalizada = ganancia / 0.3  # Ajuste por proporción de entrenamiento
     return ganancia_normalizada
 
 # Función objetivo para Optuna usando ganancia
@@ -65,7 +65,7 @@ def objective(trial):
         'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 1000),
         'lambda_l2': trial.suggest_uniform('lambda_l2', 0, 1000),
         'min_split_gain': trial.suggest_uniform('min_split_gain', 0, 20),
-        'random_state': 42,
+        #'random_state': 42,
     }
     
     d_train = lgb.Dataset(x_train, label=y_train)
@@ -87,9 +87,3 @@ def objective(trial):
 # Configurar y ejecutar Optuna
 study = optuna.create_study(direction='maximize')
 study.optimize(objective, n_trials=100)
-
-# Convertir la lista de diccionarios a un DataFrame y guardar en un archivo CSV
-all_params_df = pd.DataFrame(all_params)
-all_params_df.to_csv('todos_los_hiperparametros.csv', index=False)
-
-print("All hyperparameters saved.")
