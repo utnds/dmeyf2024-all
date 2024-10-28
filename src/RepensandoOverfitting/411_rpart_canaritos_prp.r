@@ -20,7 +20,7 @@ set.seed(353879)
 
 
 # agrego los siguientes canaritos
-for( i in 1:154 ) dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset)) ]
+# for( i in 1:154 ) dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset)) ]
 
 
 # Usted utilice sus mejores hiperparamatros
@@ -35,7 +35,7 @@ for( i in 1:154 ) dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset)) ]
                maxdepth = 4 )
 
 
-pdf(file = "./arbol_canaritos.pdf", width=28, height=4)
+pdf(file = "./arbol_canaritos1.pdf", width=28, height=4)
 prp(modelo, extra=101, digits=5, branch=1, type=4, varlen=0, faclen=0)
 dev.off()
 
