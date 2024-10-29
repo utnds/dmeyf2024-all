@@ -21,7 +21,7 @@ label_encoder = LabelEncoder()
 y = label_encoder.fit_transform(y)
 
 # Dividiendo el dataset en el conjunto de entrenamiento y el conjunto de prueba (estratificado)
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.25, stratify=y, random_state=42)
 
 # Escalado de características
 sc = StandardScaler()
@@ -36,7 +36,7 @@ def calcular_ganancia(y_true, y_pred, threshold=0.025):
         (prob_baja2 > threshold) & (y_true == 1), 117000,  # Ganancia por BAJA+2
         np.where(prob_baja2 > threshold, -3000, 0)  # Penalización por falsa predicción
     ))
-    ganancia_normalizada = ganancia / 0.2  # Ajuste por proporción de entrenamiento
+    ganancia_normalizada = ganancia / 0.25  # Ajuste por proporción de entrenamiento
     return ganancia_normalizada
 
 # Función objetivo para Optuna usando ganancia
@@ -56,11 +56,11 @@ def objective(trial):
         'min_data_in_leaf': trial.suggest_int('min_data_in_leaf', 1, 100),
         'num_leaves': trial.suggest_int('num_leaves', 20, 4000),
         'max_bin': trial.suggest_int('max_bin', 5, 255),
-        'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0),
-        'bagging_freq': trial.suggest_int('bagging_freq', 1, 10),
+        #'bagging_fraction': trial.suggest_uniform('bagging_fraction', 0.5, 1.0),
+        #'bagging_freq': trial.suggest_int('bagging_freq', 1, 10),
         'lambda_l1': trial.suggest_uniform('lambda_l1', 0, 1000),
         'lambda_l2': trial.suggest_uniform('lambda_l2', 0, 1000),
-        'min_split_gain': trial.suggest_uniform('min_split_gain', 0, 20),
+        #'min_split_gain': trial.suggest_uniform('min_split_gain', 0, 20),
         #'random_state': 42,
     }
     

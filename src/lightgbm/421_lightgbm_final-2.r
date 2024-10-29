@@ -9,26 +9,25 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4213B"
+PARAM$experimento <- "KA4212C"
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
-
 # Definición de hiperparámetros
-PARAM$finalmodel$num_iterations <- 720 #1000
-PARAM$finalmodel$learning_rate <- 0.026 #0.027
-PARAM$finalmodel$feature_fraction <- 0.74 #0.8
-PARAM$finalmodel$min_data_in_leaf <- 23 #76
-PARAM$finalmodel$num_leaves <- 284 #8
-PARAM$finalmodel$max_bin <- 129 #31
+PARAM$finalmodel$num_iterations <- 719 #1000
+PARAM$finalmodel$learning_rate <- 0.039 #0.027
+PARAM$finalmodel$feature_fraction <- 0.64 #0.8
+PARAM$finalmodel$min_data_in_leaf <- 7 #76
+PARAM$finalmodel$num_leaves <- 356 #8
+PARAM$finalmodel$max_bin <- 84 #31
 
 # Nuevos hiperparámetros a agregar
-PARAM$finalmodel$bagging_fraction <- 0.706 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$bagging_freq <- 7 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l1 <- 17.71 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l2 <- 507.2 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$min_split_gain <- 0.544 # Ejemplo de valor, ajusta según sea necesario
+#PARAM$finalmodel$bagging_fraction <- 0.846 # Ejemplo de valor, ajusta según sea necesario
+#PARAM$finalmodel$bagging_freq <- 7 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l1 <- 0.55 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l2 <- 875.93 # Ejemplo de valor, ajusta según sea necesario
+#PARAM$finalmodel$min_split_gain <- 0.544 # Ejemplo de valor, ajusta según sea necesario
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -120,11 +119,11 @@ modelo <- lgb.train(
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     num_leaves = PARAM$finalmodel$num_leaves,
     max_bin = PARAM$finalmodel$max_bin,
-    bagging_fraction = PARAM$finalmodel$bagging_fraction,
-    bagging_freq = PARAM$finalmodel$bagging_freq,
+    #bagging_fraction = PARAM$finalmodel$bagging_fraction,
+    #bagging_freq = PARAM$finalmodel$bagging_freq,
     lambda_l1 = PARAM$finalmodel$lambda_l1,
     lambda_l2 = PARAM$finalmodel$lambda_l2,
-    min_split_gain = PARAM$finalmodel$min_split_gain,
+    #min_split_gain = PARAM$finalmodel$min_split_gain,
     seed = miAmbiente$semilla_primigenia
   )
 )
@@ -169,7 +168,7 @@ setorder(tb_entrega, -prob)
 
 # genero archivos con los "envios" mejores
 # suba TODOS los archivos a Kaggle
-cortes <- seq(1500, 2500, by = 100) # aca hay que dejar estos parametros
+cortes <- seq(1800, 2800, by = 50) # aca hay que dejar estos parametros
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
