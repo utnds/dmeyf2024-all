@@ -26,13 +26,13 @@ particionar <- function(
     data, division, agrupa = "",
     campo = "fold", start = 1, seed = NA) {
   if (!is.na(seed)) set.seed(seed)
-
+  
   bloque <- unlist(mapply(function(x, y) {
     rep(y, x)
   }, division, seq(from = start, length.out = length(division))))
-
+  
   data[, (campo) := sample(rep(bloque, ceiling(.N / length(bloque))))[1:.N],
-    by = agrupa
+       by = agrupa
   ]
 }
 #------------------------------------------------------------------------------
@@ -43,17 +43,17 @@ particionar <- function(
 setwd("~/buckets/b1/")
 
 # cargo los datos,  alternar comentario segun corresponda
-#dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
-dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
+dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+# dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
 
 # particiono estratificadamente el dataset 70%, 30%
 particionar(dataset,
-  division = c(PARAM$training_pct, 100L -PARAM$training_pct), 
-  agrupa = "clase_ternaria",
-  seed = PARAM$semilla # aqui se usa SU semilla
+            division = c(PARAM$training_pct, 100L -PARAM$training_pct), 
+            agrupa = "clase_ternaria",
+            seed = PARAM$semilla # aqui se usa SU semilla
 )
 
 
@@ -61,16 +61,16 @@ particionar(dataset,
 # quiero predecir clase_ternaria a partir del resto
 # fold==1  es training,  el 70% de los datos
 modelo <- rpart("clase_ternaria ~ .",
-  data = dataset[fold == 1],
-  xval = 0,
-  control = PARAM$rpart # aqui van los parametros
+                data = dataset[fold == 1],
+                xval = 0,
+                control = PARAM$rpart # aqui van los parametros
 )
 
 
 # aplico el modelo a los datos de testing
 prediccion <- predict(modelo, # el modelo que genere recien
-  dataset[fold == 2], # fold==2  es testing, el 30% de los datos
-  type = "prob"
+                      dataset[fold == 2], # fold==2  es testing, el 30% de los datos
+                      type = "prob"
 ) # type= "prob"  es que devuelva la probabilidad
 
 # prediccion es una matriz con TRES columnas,

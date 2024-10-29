@@ -14,24 +14,24 @@ PARAM$semilla_primigenia <- 999029
 PARAM$qsemillas_tope <- 50
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 PARAM$training_pct <- 50L  # entre  1L y 99L 
 
 PARAM$rpart1 <- list (
   "cp" = -1,
   "minsplit" = 800,
-  "minbucket" = 300,
-  "maxdepth" = 20
+  "minbucket" = 400,
+  "maxdepth" = 7
 )
 
 
 PARAM$rpart2 <- list (
   "cp" = -1,
-  "minsplit" = 800,
+  "minsplit" = 650,
   "minbucket" = 300,
-  "maxdepth" = 20
+  "maxdepth" = 6
 )
 
 

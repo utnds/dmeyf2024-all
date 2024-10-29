@@ -10,8 +10,8 @@ PARAM <- list()
 PARAM$semillas <- c(999029, 999043, 999061, 999071, 999089)
 
 # elegir SU dataset comentando/ descomentando
-# PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
-PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
+PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
