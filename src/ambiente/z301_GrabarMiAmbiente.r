@@ -18,7 +18,7 @@ miAmbiente$dataset_competencia <- "~/datasets/conceptual_competencia_2024.csv.gz
 
 
 # aqui va su primer semilla
-miAmbiente$semilla_primigenia <- 353879L
+miAmbiente$semilla_primigenia <- 102191L
 
 
 write_yaml( miAmbiente,
