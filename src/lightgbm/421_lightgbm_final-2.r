@@ -7,23 +7,27 @@ require("lightgbm")
 require("yaml")
 require("rlist")
 
-
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210"
-
+PARAM$experimento <- "KA4212C"
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
+# Definición de hiperparámetros
+PARAM$finalmodel$num_iterations <- 719 #1000
+PARAM$finalmodel$learning_rate <- 0.039 #0.027
+PARAM$finalmodel$feature_fraction <- 0.64 #0.8
+PARAM$finalmodel$min_data_in_leaf <- 7 #76
+PARAM$finalmodel$num_leaves <- 356 #8
+PARAM$finalmodel$max_bin <- 84 #31
 
-PARAM$finalmodel$num_iterations <- 1000
-PARAM$finalmodel$learning_rate <- 0.027
-PARAM$finalmodel$feature_fraction <- 0.8
-PARAM$finalmodel$min_data_in_leaf <- 76
-PARAM$finalmodel$num_leaves <- 8
-
-PARAM$finalmodel$max_bin <- 31
+# Nuevos hiperparámetros a agregar
+#PARAM$finalmodel$bagging_fraction <- 0.846 # Ejemplo de valor, ajusta según sea necesario
+#PARAM$finalmodel$bagging_freq <- 7 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l1 <- 0.55 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l2 <- 875.93 # Ejemplo de valor, ajusta según sea necesario
+#PARAM$finalmodel$min_split_gain <- 0.544 # Ejemplo de valor, ajusta según sea necesario
 
 #------------------------------------------------------------------------------
 # graba a un archivo los componentes de lista
@@ -33,26 +37,26 @@ loguear <- function(reg, arch = NA, folder = "./work/", ext = ".txt",
                     verbose = TRUE) {
   archivo <- arch
   if (is.na(arch)) archivo <- paste0(substitute(reg), ext)
-
+  
   # Escribo los titulos
   if (!file.exists(archivo)) {
     linea <- paste0(
       "fecha\t",
       paste(list.names(reg), collapse = "\t"), "\n"
     )
-
+    
     cat(linea, file = archivo)
   }
-
+  
   # la fecha y hora
   linea <- paste0(
     format(Sys.time(), "%Y%m%d %H%M%S"), "\t",
     gsub(", ", "\t", toString(reg)), "\n"
   )
-
+  
   # grabo al archivo
   cat(linea, file = archivo, append = TRUE)
-
+  
   # imprimo por pantalla
   if (verbose) cat(linea)
 }
@@ -61,13 +65,11 @@ loguear <- function(reg, arch = NA, folder = "./work/", ext = ".txt",
 # Aqui empieza el programa
 setwd("~/buckets/b1")
 
-
-#cargo miAmbiente
-miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
+# cargo miAmbiente
+miAmbiente <- read_yaml("~/buckets/b1/miAmbiente.yml")
 
 # cargo los datos
-dataset <- fread( miAmbiente$dataset_pequeno, stringsAsFactors = TRUE)
-
+dataset <- fread(miAmbiente$dataset_pequeno, stringsAsFactors = TRUE)
 
 #--------------------------------------
 
@@ -83,7 +85,6 @@ campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria", "clase01"))
 
 #--------------------------------------
 
-
 # establezco donde entreno
 dataset[, train := 0L]
 dataset[foto_mes %in% PARAM$input$training, train := 1L]
@@ -97,8 +98,6 @@ dir.create(paste0("./exp/", PARAM$experimento, "/"), showWarnings = FALSE)
 # Establezco el Working Directory DEL EXPERIMENTO
 setwd(paste0("./exp/", PARAM$experimento, "/"))
 
-
-
 # dejo los datos en el formato que necesita LightGBM
 dtrain <- lgb.Dataset(
   data = data.matrix(dataset[train == 1L, campos_buenos, with = FALSE]),
@@ -106,17 +105,25 @@ dtrain <- lgb.Dataset(
 )
 
 # genero el modelo
-# estos hiperparametros  salieron de una laaarga Optmizacion Bayesiana
+# estos hiperparámetros salieron de una larga Optimización Bayesiana
 modelo <- lgb.train(
   data = dtrain,
   param = list(
     objective = "binary",
-    max_bin = PARAM$finalmodel$max_bin,
-    learning_rate = PARAM$finalmodel$learning_rate,
+    metric = "binary_logloss",
+    verbosity = -1,
+    boosting_type = "gbdt",
     num_iterations = PARAM$finalmodel$num_iterations,
-    num_leaves = PARAM$finalmodel$num_leaves,
-    min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
+    learning_rate = PARAM$finalmodel$learning_rate,
     feature_fraction = PARAM$finalmodel$feature_fraction,
+    min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
+    num_leaves = PARAM$finalmodel$num_leaves,
+    max_bin = PARAM$finalmodel$max_bin,
+    #bagging_fraction = PARAM$finalmodel$bagging_fraction,
+    #bagging_freq = PARAM$finalmodel$bagging_freq,
+    lambda_l1 = PARAM$finalmodel$lambda_l1,
+    lambda_l2 = PARAM$finalmodel$lambda_l2,
+    #min_split_gain = PARAM$finalmodel$min_split_gain,
     seed = miAmbiente$semilla_primigenia
   )
 )
@@ -127,14 +134,13 @@ tb_importancia <- as.data.table(lgb.importance(modelo))
 archivo_importancia <- "impo.txt"
 
 fwrite(tb_importancia,
-  file = archivo_importancia,
-  sep = "\t"
+       file = archivo_importancia,
+       sep = "\t"
 )
 
 #--------------------------------------
-# grabo a disco el modelo en un formato para seres humanos ... ponele ...
-
-lgb.save(modelo, "modelo.txt" )
+# grabo a disco el modelo en un formato para seres humanos
+lgb.save(modelo, "modelo.txt")
 
 #--------------------------------------
 
@@ -153,57 +159,59 @@ tb_entrega[, prob := prediccion]
 
 # grabo las probabilidad del modelo
 fwrite(tb_entrega,
-  file = "prediccion.txt",
-  sep = "\t"
+       file = "prediccion.txt",
+       sep = "\t"
 )
 
 # ordeno por probabilidad descendente
 setorder(tb_entrega, -prob)
 
-
-# genero archivos con los  "envios" mejores
+# genero archivos con los "envios" mejores
 # suba TODOS los archivos a Kaggle
-
-cortes <- seq(9000, 13500, by = 500)
+cortes <- seq(1800, 2800, by = 50) # aca hay que dejar estos parametros
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
-
+  
   nom_arch_kaggle <- paste0(PARAM$experimento, "_", envios, ".csv")
-
+  
   fwrite(tb_entrega[, list(numero_de_cliente, Predicted)],
-    file = nom_arch_kaggle,
-    sep = ","
+         file = nom_arch_kaggle,
+         sep = ","
   )
-
+  
   # subo a Kaggle
   # preparo todo para el submit
   comentario <- paste0( "'",
-    "envios=", envios,
-    " num_iterations=", PARAM$finalmodel$num_iterations,
-    " learning_rate=", PARAM$finalmodel$learning_rate,
-    " num_leaves=", PARAM$finalmodel$num_leaves,
-    " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
-    " feature_fraction=", PARAM$finalmodel$feature_fraction,
-    "'"
+                        "envios=", envios,
+                        " num_iterations=", PARAM$finalmodel$num_iterations,
+                        " learning_rate=", PARAM$finalmodel$learning_rate,
+                        " num_leaves=", PARAM$finalmodel$num_leaves,
+                        " min_data_in_leaf=", PARAM$finalmodel$min_data_in_leaf,
+                        " feature_fraction=", PARAM$finalmodel$feature_fraction,
+                        " bagging_fraction=", PARAM$finalmodel$bagging_fraction,
+                        " bagging_freq=", PARAM$finalmodel$bagging_freq,
+                        " lambda_l1=", PARAM$finalmodel$lambda_l1,
+                        " lambda_l2=", PARAM$finalmodel$lambda_l2,
+                        " min_split_gain=", PARAM$finalmodel$min_split_gain,
+                        "'"
   )
-
+  
   comando <- paste0( "~/install/proc_kaggle_submit.sh ",
-    "TRUE ",
-    miAmbiente$modalidad, " ",
-    nom_arch_kaggle, " ",
-    comentario
+                     "TRUE ",
+                     miAmbiente$modalidad, " ",
+                     nom_arch_kaggle, " ",
+                     comentario
   )
-
+  
   ganancia <- system( comando, intern=TRUE )
-
+  
   linea <- c( 
     list( "ganancia"= ganancia),
     PARAM$finalmodel
   )
-
+  
   loguear( linea, arch="tb_ganancias.txt" )
-
 }
 
 cat("\n\nSe han realizado los submits a Kaggle\n")
