@@ -17,17 +17,17 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 133
-PARAM$finalmodel$learning_rate <- 0.1023
-PARAM$finalmodel$feature_fraction <- 0.7076
-PARAM$finalmodel$min_data_in_leaf <- 83
-PARAM$finalmodel$num_leaves <- 1242
-PARAM$finalmodel$max_depth <- 7
-PARAM$finalmodel$lambda_l2 <-489800637707915
-PARAM$finalmodel$lambda_l1 < 0.601292558874602
-PARAM$finalmodel$bagging_fraction <-0.993689925858991
-PARAM$finalmodel$bagging_freq <-2
-PARAM$finalmodel$min_gain_to_split <-0.827428049864831
+PARAM$finalmodel$num_iterations = 407
+PARAM$finalmodel$learning_rate = 0.08
+PARAM$finalmodel$feature_fraction = 0.8053
+PARAM$finalmodel$min_data_in_leaf = 602
+PARAM$finalmodel$num_leaves = 1232
+PARAM$finalmodel$max_depth = 8
+PARAM$finalmodel$lambda_l2 =4.89800637707915
+PARAM$finalmodel$lambda_l1 = 0.374436332345677
+PARAM$finalmodel$bagging_fraction = 0.897862288717015
+PARAM$finalmodel$bagging_freq = 5
+PARAM$finalmodel$min_gain_to_split = 0.672625587086848
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -123,7 +123,13 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    seed = miAmbiente$semilla_primigenia
+    seed = miAmbiente$semilla_primigenia,
+    max_depth=PARAM$finalmodel$max_depth,
+    lambda_l2=PARAM$finalmodel$lambda_l2,
+    lambda_l1=PARAM$finalmodel$lambda_l1,
+    bagging_fraction=PARAM$finalmodel$bagging_fraction,
+    bagging_freq=PARAM$finalmodel$bagging_freq,
+    min_gain_to_split=PARAM$finalmodel$min_gain_to_split
   )
 )
 
@@ -170,7 +176,7 @@ setorder(tb_entrega, -prob)
 # genero archivos con los  "envios" mejores
 # suba TODOS los archivos a Kaggle
 
-cortes <- seq(7000, 10500, by = 500)
+cortes <- seq(9000, 15500, by = 500)
 for (envios in cortes) {
   tb_entrega[, Predicted := 0L]
   tb_entrega[1:envios, Predicted := 1L]
