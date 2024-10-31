@@ -10,22 +10,18 @@ require("rlist")
 
 # defino los parametros de la corrida, en una lista, la variable global  PARAM
 PARAM <- list()
-PARAM$experimento <- "KA4210_bis3"
+PARAM$experimento <- "KA4210"
 
 
 PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
-PARAM$finalmodel$lambda_l1 <- 3.85690256
-PARAM$finalmodel$lambda_l2 <- 1.88424473
-PARAM$finalmodel$bagging_freq <- 0
-PARAM$finalmodel$min_split_gain <- 0
-PARAM$finalmodel$bagging_fraction <- 0.3730752241
-PARAM$finalmodel$num_iterations <- 609
-PARAM$finalmodel$learning_rate <- 0.02733384812
-PARAM$finalmodel$feature_fraction <- 0.7818334979
-PARAM$finalmodel$min_data_in_leaf <- 429
-PARAM$finalmodel$num_leaves <- 507
+
+PARAM$finalmodel$num_iterations <- 1000
+PARAM$finalmodel$learning_rate <- 0.027
+PARAM$finalmodel$feature_fraction <- 0.8
+PARAM$finalmodel$min_data_in_leaf <- 76
+PARAM$finalmodel$num_leaves <- 8
 
 PARAM$finalmodel$max_bin <- 31
 
@@ -116,11 +112,6 @@ modelo <- lgb.train(
   param = list(
     objective = "binary",
     max_bin = PARAM$finalmodel$max_bin,
-    lambda_l1 = PARAM$finalmodel$lambda_l1,
-    lambda_l2 = PARAM$finalmodel$lambda_l2,
-    bagging_freq = PARAM$finalmodel$bagging_freq,
-    min_split_gain = PARAM$finalmodel$min_split_gain,
-    bagging_fraction = PARAM$finalmodel$bagging_fraction,
     learning_rate = PARAM$finalmodel$learning_rate,
     num_iterations = PARAM$finalmodel$num_iterations,
     num_leaves = PARAM$finalmodel$num_leaves,
@@ -129,7 +120,6 @@ modelo <- lgb.train(
     seed = miAmbiente$semilla_primigenia
   )
 )
-
 
 #--------------------------------------
 # ahora imprimo la importancia de variables
