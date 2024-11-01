@@ -278,11 +278,11 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011)
+    202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004) #normal hasta 202011
 
 
   param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009)
+    202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004, 202003, 202002)#normal hasta 202009
   param_local$train$validation <- c(202106)
   param_local$train$testing <- c(202107)
 
@@ -413,8 +413,8 @@ KA_evaluate_kaggle <- function( pinputexps )
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <-  1600L #1600
-  param_local$envios_hasta <-  2800L #2400
-  param_local$envios_salto <-   100L #200
+  param_local$envios_hasta <-  2400L #2400
+  param_local$envios_salto <-   200L #200
   param_local$competition <- "utn-dm-ey-f-2024-conceptual"
 
   return( exp_correr_script( param_local ) ) # linea fija
