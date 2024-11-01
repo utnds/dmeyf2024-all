@@ -33,7 +33,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "HT4220"
+PARAM$experimento <- "HT4220_bis"
 
 PARAM$input$training <- c(202107) # los meses en los que vamos a entrenar
 
@@ -50,10 +50,15 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
-  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
+  makeNumericParam("lambda_l1", lower = 0, upper = 10), # 
+  makeNumericParam("lambda_l2", lower = 0, upper = 10),
+  makeIntegerParam("bagging_freq", lower = 0L, upper = 5L),
+  makeIntegerParam("min_split_gain", lower = 0L, upper = 15L),
+  makeNumericParam("bagging_fraction", lower = 0, upper = 1),
+  makeNumericParam("learning_rate", lower = 0.01, upper = 0.3), # valores de acuerdo al articulo de catedra
   makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
+  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 3000L),
   makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
