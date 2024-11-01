@@ -17,17 +17,19 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 
-PARAM$finalmodel$num_iterations <- 125
-PARAM$finalmodel$learning_rate <- 0.021236499115822
-PARAM$finalmodel$feature_fraction <- 0.710832653175438
-PARAM$finalmodel$min_data_in_leaf <- 82
-PARAM$finalmodel$num_leaves <- 213
+PARAM$finalmodel$num_iterations <- 1150
+PARAM$finalmodel$learning_rate <- 0.184366617591751
+PARAM$finalmodel$feature_fraction <- -1
+PARAM$finalmodel$min_data_in_leaf <- 32
+PARAM$finalmodel$num_leaves <- 64
 
 PARAM$finalmodel$max_bin <- 31
 
-PARAM$finalmodel$max_depth <- 9
-PARAM$finalmodel$bagging_fraction <- 0.825742332357158 
-PARAM$finalmodel$bagging_freq <- 9 
+PARAM$finalmodel$max_depth <- -1
+PARAM$finalmodel$bagging_fraction <- 0.9 
+PARAM$finalmodel$bagging_freq <- 1
+PARAM$finalmodel$lambda_l1 <- 1150		
+PARAM$finalmodel$lambda_l2 <- 1150
 
 
 #------------------------------------------------------------------------------
@@ -122,11 +124,15 @@ modelo <- lgb.train(
     num_leaves = PARAM$finalmodel$num_leaves,
     min_data_in_leaf = PARAM$finalmodel$min_data_in_leaf,
     feature_fraction = PARAM$finalmodel$feature_fraction,
-    # seed = miAmbiente$semilla_primigenia,
+    #seed = miAmbiente$semilla_primigenia,
     seed = 823819,
     max_depth = PARAM$finalmodel$max_depth,
     bagging_fraction = PARAM$finalmodel$bagging_fraction,
-    bagging_freq = PARAM$finalmodel$bagging_freq
+    bagging_freq = PARAM$finalmodel$bagging_freq,
+    
+    max_depth = PARAM$finalmodel$max_depth,
+    lambda_l1 = PARAM$finalmodel$lambda_l1, 
+    lambda_l1 = PARAM$finalmodel$lambda_l2
   )
 )
 
