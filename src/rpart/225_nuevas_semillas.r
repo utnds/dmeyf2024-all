@@ -8,7 +8,7 @@ primos <- generate_primes(min = 100000, max = 1000000)
 
 set.seed(999029) # inicializo 
 
-# me quedo con por ejemplo 10 primos al azar
-semillas <- sample(primos, 10 )
+# me quedo con por ejemplo 20 primos al azar
+semillas <- sample(primos, 20 )
 
 print( semillas )

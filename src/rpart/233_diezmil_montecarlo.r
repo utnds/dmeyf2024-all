@@ -4,10 +4,14 @@ gc() # Garbage Collection
 require("data.table")
 require("rpart")
 require("parallel")
+require("primes")
+require("ggplot2")
+
 
 PARAM <- list()
 # reemplazar por las propias semillas
-PARAM$semillas <- c(999029, 999043, 999061, 999071, 999089)
+PARAM$semilla_primigenia <- 999029
+PARAM$qsemillas <- 10000
 
 # elegir SU dataset comentando/ descomentando
 # PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
@@ -97,11 +101,22 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
 
+
+# genero numeros primos
+primos <- generate_primes(min = 100000, max = 1000000)
+set.seed(PARAM$semilla_primigenia) # inicializo 
+# me quedo con PARAM$qsemillas   semillas
+PARAM$semillas <- sample(primos, PARAM$qsemillas )
+
+
 # cargo los datos
 dataset <- fread(PARAM$dataset_nom)
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
+
+dir.create("~/buckets/b1/exp/EX2330", showWarnings = FALSE)
+setwd("~/buckets/b1/exp/EX2330")
 
 
 # la funcion mcmapply  llama a la funcion ArbolEstimarGanancia
@@ -120,12 +135,51 @@ salidas
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
-print( tb_salida )
+fwrite( tb_salida,
+        "tb_salida.txt",
+        sep ="\t" )
 
-# finalmente calculo la media (promedio)  de las ganancias
-cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
 
-# calculo todos los promedios
-cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )
 
-# desvio estandar Distribucion Binomial   sqrt( n * p * (1-p) )
+# grafico densidades
+media <- tb_salida[ , mean( ganancia_test) ]
+cuantiles  <-  quantile(  tb_salida[,  ganancia_test ],
+   prob= c(0.05, 0.5, 0.95),
+   na.rm=TRUE )
+
+grafico <- ggplot( tb_salida, aes(x=ganancia_test)) + geom_density(alpha=0.25)  +
+  geom_vline(xintercept=media, linewidth=1, color="red") +
+  geom_vline(xintercept=cuantiles[1], linewidth=0.5, color="blue") +
+  geom_vline(xintercept=cuantiles[2], linewidth=0.5, color="blue") +
+  geom_vline(xintercept=cuantiles[3], linewidth=0.5, color="blue")
+
+pdf("densidad.pdf")
+print(grafico)
+dev.off()
+
+# desvios estandar
+tb_final <- data.table(
+    grupo_size=integer(),
+    grupos=integer(),
+    gan_media=numeric(),
+    gan_sd=numeric()
+)
+
+cant <-  nrow( tb_salida )
+for( q in  c(1,2,4, 8, 16, 32, 64, 128 ) )
+{
+  i <- 1
+  grupos <- 0
+  vgan <- c()
+  while(  i+q-1 <= cant )
+  {
+    gan <- tb_salida[ i:(i+q-1) , mean( ganancia_test) ]
+    vgan <-  c( vgan, gan )
+    i <- i + q
+    grupos <-  grupos + 1
+  }
+  
+  tb_final <- rbindlist( list( tb_final, list( q, grupos, mean(vgan), sd(vgan) ) ) )
+}
+
+print( tb_final )
