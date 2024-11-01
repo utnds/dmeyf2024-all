@@ -278,12 +278,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(202107, 202106, 202105, 202104, 202103, 202102,
-    202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004) #normal hasta 202011
+    202101, 202012, 202011, 202010, 202009, 202008, 202007, 202006) #normal hasta 202011
 
 
   param_local$train$training <- c(202105, 202104, 202103, 202102, 202101,
-    202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004, 202003, 202002)#normal hasta 202009
-  param_local$train$validation <- c(202106)
+    202012, 202011, 202010, 202009, 202008, 202007, 202006, 202005, 202004)#normal hasta 202009
+  param_local$train$validation <- c(202104,202105,202106) #DEFAULT 202106
   param_local$train$testing <- c(202107)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
@@ -328,29 +328,29 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo VALOR  DEFECTO -1
-    min_gain_to_split = 5, # min_gain_to_split >= 0.0
-    min_sum_hessian_in_leaf = 0.01, #  min_sum_hessian_in_leaf >= 0.0
+    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
     lambda_l1 = 0, # lambda_l1 >= 0.0
     lambda_l2 = 0, # lambda_l2 >= 0.0
-    max_bin = 32L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 2000, # un numero muy grande, lo limita early_stopping_rounds
+    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
+    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
     bagging_fraction = 0.53, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 0.8, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 0.5, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 100, # scale_pos_weight > 0.0
+    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.5, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
-    skip_drop = 0.2, # 0.0 <= skip_drop <= 1.0
+    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.04, 0.1 ),
+    learning_rate = c( 0.01, 0.5 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 10L, 200L, "integer" )
+    min_data_in_leaf = c( 10L, 2000L, "integer" )
   )
 
 
