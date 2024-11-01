@@ -328,18 +328,18 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.01, # min_gain_to_split >= 0.0
+    min_gain_to_split = 2.1, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 20, # lambda_l1 >= 0.0
-    lambda_l2 = 20, # lambda_l2 >= 0.0
-    max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    lambda_l1 = 4.38, # lambda_l1 >= 0.0
+    lambda_l2 = 13.19, # lambda_l2 >= 0.0
+    max_bin = 32L, # lo debo dejar fijo, no participa de la BO
+    num_iterations = 731, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    bagging_fraction = 0.59, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 0.5, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 0.3, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 60, # scale_pos_weight > 0.0
+    scale_pos_weight = 10, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -347,10 +347,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
+    learning_rate = c( 0.04, 0.1 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 10L, 1000L, "integer" )
+    min_data_in_leaf = c( 10L, 100L, "integer" )
   )
 
 
@@ -449,7 +449,7 @@ wf_septiembre <- function( pnombrewf )
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
-  #KA_evaluate_kaggle()
+  KA_evaluate_kaggle()
 
   return( exp_wf_end() ) # linea fija
 }
