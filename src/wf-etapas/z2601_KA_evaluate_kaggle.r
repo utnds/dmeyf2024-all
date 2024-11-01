@@ -196,7 +196,7 @@ for ( irank in ranks ) {
         dir.create("~/.virtual_documents", showWarnings=FALSE)
         cat( format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
              file = "~/.virtual_documents/z-activity.txt")
-        Sys.sleep( 30 )  # espero para no saturar
+        #Sys.sleep( 30 )  # espero para no saturar  ACA COMENTE ESTA LINEA CUANDO NO HAGO SUBMIT A KAGGLE PARA NO DEMORAR
         file.remove("~/.virtual_documents/z-activity.txt") 
 
         res <- "Successfully"  # pequena ayuda ...

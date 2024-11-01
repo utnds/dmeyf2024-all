@@ -327,23 +327,23 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     feature_pre_filter = FALSE,
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
-    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    max_depth = 32L, # -1 significa no limitar,  por ahora lo dejo fijo VALOR  DEFECTO -1
     min_gain_to_split = 2.1, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
     lambda_l1 = 4.38, # lambda_l1 >= 0.0
     lambda_l2 = 13.19, # lambda_l2 >= 0.0
     max_bin = 32L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 731, # un numero muy grande, lo limita early_stopping_rounds
+    num_iterations = 735, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 0.59, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 0.5, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 0.3, # 0.0 < neg_bagging_fraction <= 1.0
+    bagging_fraction = 0.53, # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = 0.8, # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = 0.5, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 10, # scale_pos_weight > 0.0
+    scale_pos_weight = 100, # scale_pos_weight > 0.0
 
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    drop_rate = 0.5, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
-    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    skip_drop = 0.2, # 0.0 <= skip_drop <= 1.0
 
     extra_trees = FALSE,
     # Parte variable
@@ -412,9 +412,9 @@ KA_evaluate_kaggle <- function( pinputexps )
 
   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <-  1600L
-  param_local$envios_hasta <-  2400L
-  param_local$envios_salto <-   200L
+  param_local$envios_desde <-  1600L #1600
+  param_local$envios_hasta <-  2800L #2400
+  param_local$envios_salto <-   100L #200
   param_local$competition <- "utn-dm-ey-f-2024-conceptual"
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -445,7 +445,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 100 )  # iteraciones inteligentes 50 ES EL DEFAULT
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
