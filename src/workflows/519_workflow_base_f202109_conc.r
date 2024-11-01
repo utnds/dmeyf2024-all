@@ -141,8 +141,8 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -155,7 +155,7 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
   param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
@@ -328,10 +328,10 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_gain_to_split = 0.01, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    lambda_l1 = 20, # lambda_l1 >= 0.0
+    lambda_l2 = 20, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
@@ -339,7 +339,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    scale_pos_weight = 60, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -350,7 +350,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    min_data_in_leaf = c( 10L, 1000L, "integer" )
   )
 
 
@@ -432,16 +432,16 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
-  FEhist_base()
+  #CA_catastrophe_base( metodo="MachineLearning")
+  #FEintra_manual_base()
+  #DR_drifting_base(metodo="rank_cero_fijo")
+  #FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+  #FErf_attributes_base( arbolitos= 20,
+  #  hojas_por_arbol= 16,
+  #  datos_por_hoja= 1000,
+  #  mtry_ratio= 0.2
+  #)
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
@@ -449,7 +449,7 @@ wf_septiembre <- function( pnombrewf )
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
-  KA_evaluate_kaggle()
+  #KA_evaluate_kaggle()
 
   return( exp_wf_end() ) # linea fija
 }
