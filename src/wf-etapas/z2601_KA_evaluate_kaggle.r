@@ -189,14 +189,14 @@ for ( irank in ranks ) {
         l3 <- paste0( l3,  " -m ",  "\"", envg$PARAM$experimento,  " , ",  nom_submit , "\"",  "\n")
         l4 <- "deactivate \n"
 
-        #cat( paste0( l1, l2, l3, l4 ) , file = "subir.sh" ) # ESTO LO COMENTE YO
-        #Sys.chmod( "subir.sh", mode = "744", use_umask = TRUE) #Y ESTO TAMBIEN
+        cat( paste0( l1, l2, l3, l4 ) , file = "subir.sh" ) # ESTO LO COMENTE YO
+        Sys.chmod( "subir.sh", mode = "744", use_umask = TRUE) #Y ESTO TAMBIEN
 
-        #res <- system( "./subir.sh", intern= TRUE )
+        res <- system( "./subir.sh", intern= TRUE )
         dir.create("~/.virtual_documents", showWarnings=FALSE)
         cat( format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
              file = "~/.virtual_documents/z-activity.txt")
-        #Sys.sleep( 30 )  # espero para no saturar  ACA COMENTE ESTA LINEA CUANDO NO HAGO SUBMIT A KAGGLE PARA NO DEMORAR
+        Sys.sleep( 30 )  # espero para no saturar  ACA COMENTE ESTA LINEA CUANDO NO HAGO SUBMIT A KAGGLE PARA NO DEMORAR
         file.remove("~/.virtual_documents/z-activity.txt") 
 
         res <- "Successfully"  # pequena ayuda ...

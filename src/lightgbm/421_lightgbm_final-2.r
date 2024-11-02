@@ -15,18 +15,18 @@ PARAM$input$training <- c(202107) # meses donde se entrena el modelo
 PARAM$input$future <- c(202109) # meses donde se aplica el modelo
 
 # Definición de hiperparámetros
-PARAM$finalmodel$num_iterations <- 719 #1000
-PARAM$finalmodel$learning_rate <- 0.039 #0.027
-PARAM$finalmodel$feature_fraction <- 0.64 #0.8
-PARAM$finalmodel$min_data_in_leaf <- 7 #76
-PARAM$finalmodel$num_leaves <- 356 #8
-PARAM$finalmodel$max_bin <- 84 #31
+PARAM$finalmodel$num_iterations <- 127 #1000
+PARAM$finalmodel$learning_rate <- 0.046 #0.027
+PARAM$finalmodel$feature_fraction <- 0.5 #0.8
+PARAM$finalmodel$min_data_in_leaf <- 94 #76
+PARAM$finalmodel$num_leaves <- 747 #8
+PARAM$finalmodel$max_bin <- 208 #31
 
 # Nuevos hiperparámetros a agregar
 #PARAM$finalmodel$bagging_fraction <- 0.846 # Ejemplo de valor, ajusta según sea necesario
 #PARAM$finalmodel$bagging_freq <- 7 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l1 <- 0.55 # Ejemplo de valor, ajusta según sea necesario
-PARAM$finalmodel$lambda_l2 <- 875.93 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l1 <- 65.96 # Ejemplo de valor, ajusta según sea necesario
+PARAM$finalmodel$lambda_l2 <- 353.3 # Ejemplo de valor, ajusta según sea necesario
 #PARAM$finalmodel$min_split_gain <- 0.544 # Ejemplo de valor, ajusta según sea necesario
 
 #------------------------------------------------------------------------------
