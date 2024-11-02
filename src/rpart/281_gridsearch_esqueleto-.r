@@ -124,8 +124,8 @@ dataset <- dataset[clase_ternaria != ""]
 
 # creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
-dir.create("~/buckets/b1/exp/HT2810-/", showWarnings = FALSE)
-setwd( "~/buckets/b1/exp/HT2810-/" )
+dir.create("~/buckets/b1/exp/HT2812/", showWarnings = FALSE)
+setwd( "~/buckets/b1/exp/HT2812/" )
 
 
 # genero la data.table donde van los resultados detallados del Grid Search

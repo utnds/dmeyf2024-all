@@ -11,9 +11,9 @@ PARAM$modalidad <- "conceptual"
 
 PARAM$rpart <- list (
   "cp" = -1,
-  "minsplit" = 860,
-  "minbucket" = 32,
-  "maxdepth" = 14
+  "minsplit" = 700,
+  "minbucket" = 36,
+  "maxdepth" = 4
 )
 
 #------------------------------------------------------------------------------
