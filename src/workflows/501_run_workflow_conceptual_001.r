@@ -1,4 +1,4 @@
-update.packages()
+
 require("rlang")
 
 # workflow que voy a correr
