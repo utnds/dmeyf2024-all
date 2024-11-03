@@ -435,27 +435,27 @@ EV_evaluate_conclase_gan <- function( pinputexps )
 wf_julio <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
-
+  
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
-  FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
-  FEhist_base()
-
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
-  )
+  #CA_catastrophe_base( metodo="MachineLearning")
+  #FEintra_manual_base()
+  #DR_drifting_base(metodo="deflacion")
+  #FEhist_base()
+  
+  #FErf_attributes_base( arbolitos= 20,
+  #  hojas_por_arbol= 16,
+  #  datos_por_hoja= 1000,
+  #  mtry_ratio= 0.2
+  #)
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
-
+  
   ts7 <- TS_strategy_base7()
   ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
-
+  
   fm <- FM_final_models_lightgbm( c(ht, ts7), ranks=c(1), qsemillas=30 )
   SC_scoring( c(fm, ts7) )
   EV_evaluate_conclase_gan()
-
+  
   return( exp_wf_end() ) # linea fija
 }
 #------------------------------------------------------------------------------
