@@ -350,7 +350,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 20L, 2000L, "integer" ),
     
-    scale_pos_weight = c(11L,101L,"integer"), # scale_pos_weight > 0.0
+    scale_pos_weight = c(10L,999L,"integer"), # scale_pos_weight > 0.0
     neg_bagging_fraction = c(0.0, 1.0) # 0.0 < neg_bagging_fraction <= 1.0
   )
   

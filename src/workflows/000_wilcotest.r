@@ -1,1 +1,0 @@
-wilcox.test(ganancias_log_sin_modificar[1:100,7],ganancias_log_modificado[1:100,7])
