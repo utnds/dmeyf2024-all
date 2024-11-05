@@ -22,9 +22,9 @@ PARAM$experimento <- 3610
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 50,
+  "minsplit" = 400,
   "minbucket" = 20,
-  "maxdepth" = 6
+  "maxdepth" = 4
 )
 
 # parametros  arbol
@@ -164,7 +164,7 @@ for( icorrida in seq(nrow(PARAM$rpart)) ){
 
       ganancia <- system( comando, intern=TRUE )
       cat( paste0( ganancia, "\t", nom_arch_kaggle, "\n"),
-        file="tb_ganancias.txt",
+        file="tb_ganancias_f1.txt",
         append=TRUE
       )
 

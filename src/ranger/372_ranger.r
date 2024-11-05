@@ -102,7 +102,7 @@ entrega <- as.data.table(list(
 
 
 
-nom_arch_kaggle <- "KA3720_001.csv"
+nom_arch_kaggle <- "KA3720_002.csv"
 
 # genero el archivo para Kaggle
 fwrite(entrega,
