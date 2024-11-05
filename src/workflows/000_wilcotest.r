@@ -1,11 +1,11 @@
-wilcox.test(ganancias_log_base[1:100,7],ganancias_log_modificado[1:100,7], alternative = 'greater')
+wilcox.test(ganancias_log_base[1:100,7],ganancias_log_modificada[1:100,7], alternative = 'less')
 
 
 library(ggplot2)
 
 # Crear un data frame combinando ambos conjuntos de datos y agregando una columna para el tipo y el índice
 data <- data.frame(
-  valor = c(ganancias_log_base[1:100, 7], ganancias_log_modificado[1:100, 7]),
+  valor = c(ganancias_log_base[1:100, 7], ganancias_log_modificada[1:100, 7]),
   tipo = rep(c("Base", "Modificado"), each = 100),
   indice = rep(1:100, times = 2)  # índice para el eje x
 )
