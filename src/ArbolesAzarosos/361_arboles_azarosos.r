@@ -22,15 +22,15 @@ PARAM$experimento <- 3610
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 50, #640
-  "minbucket" = 20, #32
-  "maxdepth" = 10 #4
+  "minsplit" = 640, #640
+  "minbucket" = 32, #32
+  "maxdepth" = 4 #4
 )
 
 # parametros  arbol
 # entreno cada arbol con solo 50% de las variables variables
 #  por ahora, es fijo
-PARAM$feature_fraction <- 0.5
+PARAM$feature_fraction <- 0.8
 
 
 # voy a generar 512 arboles,
