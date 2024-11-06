@@ -340,7 +340,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
 
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    #neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = TRUE, #
     #scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
@@ -353,7 +353,8 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     learning_rate = c( 0.02, 0.3 ),
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    min_data_in_leaf = c( 20L, 2000L, "integer" ),
+    neg_bagging_fraction = c(0.5,0.9)
   )
 
 
