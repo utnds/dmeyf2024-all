@@ -1,3 +1,5 @@
+# INDICACIONES DE LOS CAMBIOS EN ARCHIVO KAGGLE1.odt
+
 # Corrida general del Workflow Baseline
 
 # limpio la memoria
