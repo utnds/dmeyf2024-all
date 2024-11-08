@@ -11,10 +11,10 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("~/datasets/datos_Euge.csv")
 
-dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
-dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
+# dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
+# dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
 
 # genero el modelo,  aqui se construye el arbol
 # quiero predecir clase_ternaria a partir de el resto de las variables
@@ -37,30 +37,30 @@ prp(modelo,
 
 
 # aplico el modelo a los datos nuevos
-prediccion <- predict(
-    object = modelo,
-    newdata = dapply,
-    type = "prob"
-)
+#prediccion <- predict(
+#    object = modelo,
+#    newdata = dapply,
+#    type = "prob"
+#)
 
 # prediccion es una matriz con TRES columnas,
 # llamadas "BAJA+1", "BAJA+2"  y "CONTINUA"
 # cada columna es el vector de probabilidades
 
 # agrego a dapply una columna nueva que es la probabilidad de BAJA+2
-dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
+#dapply[, prob_baja2 := prediccion[, "BAJA+2"]]
 
 # solo le envio estimulo a los registros
 #  con probabilidad de BAJA+2 mayor  a  1/40
-dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
+#dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
-dir.create("./exp/")
-dir.create("./exp/KA2001")
+#dir.create("./exp/")
+#dir.create("./exp/KA2001")
 
 # solo los campos para Kaggle
-fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_002_viv.csv",
-        sep = ","
-)
+#fwrite(dapply[, list(numero_de_cliente, Predicted)],
+#        file = "./exp/KA2001/K101_002_viv.csv",
+#        sep = ","
+#)
