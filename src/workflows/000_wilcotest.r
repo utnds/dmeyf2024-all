@@ -1,4 +1,4 @@
-wilcox.test(ganancias_log_base[1:100,7],ganancias_log_modificada[1:100,7], alternative = 'greater')
+wilcox.test(ganancias_log_base[1:100,7],ganancias_log_modificada[1:100,7], alternative = 'less')
 
 
 library(ggplot2)
