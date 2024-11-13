@@ -16,9 +16,9 @@ PARAM$training_pct <- 70L  # entre  1L y 99L
 
 PARAM$rpart <- list (
   "cp" = -1,
-  "minsplit" = 800,
-  "minbucket" = 200,
-  "maxdepth" = 6
+  "minsplit" = 1000,
+  "minbucket" = 2,
+  "maxdepth" = 4
 )
 
 #------------------------------------------------------------------------------
