@@ -263,7 +263,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 # Training Strategy  Baseline
 #  azaroso, utiliza semilla
 #------------------------------------------------------------------------------
-# Atencion, el undersampling es de 0.02
+# Atencion, el undersampling es de 0.10
 #  tanto para entrenamineto como para  Final train$clase01_valor1
 
 TS_strategy_base9 <- function( pinputexps )
@@ -274,7 +274,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.02
+  param_local$final_train$undersampling <- 0.10
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
@@ -307,7 +307,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.02
+  param_local$train$undersampling <- 0.10
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
