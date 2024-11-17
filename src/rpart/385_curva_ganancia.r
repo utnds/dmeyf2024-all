@@ -18,9 +18,9 @@ require("ggplot2")
 
 # cambiar aqui los parametros
 PARAM <- list()
-PARAM$minsplit <- 300
-PARAM$minbucket <- 20
-PARAM$maxdepth <- 11
+PARAM$minsplit <- 860
+PARAM$minbucket <- 32
+PARAM$maxdepth <- 4
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -114,13 +114,18 @@ amostrar <- ifelse( miAmbiente$modalidad == "conceptual",
 )
 
 
-gra <- ggplot(
-           data = dataset[pos <= amostrar],
-           aes( x = pos, y = ganancia_acumulada,
-                color = ifelse(fold == 1, "train", "test") )
-             ) + geom_line()
+# Cambia el tamaño de la ventana gráfica
+options(repr.plot.width = 10, repr.plot.height = 10)  # Ajusta el tamaño en pulgadas
 
-print( gra )
+# Define el gráfico
+gra <- ggplot(
+  data = dataset[pos <= amostrar],
+  aes( x = pos, y = ganancia_acumulada,
+       color = ifelse(fold == 1, "train", "test") )
+) + geom_line()
+
+# Muestra el gráfico en pantalla con el tamaño ajustado
+print(gra)
 
 cat( "Train gan max: ", dataset[fold==1, max(ganancia_acumulada)], "\n" )
 cat( "Test  gan max: ", dataset[fold==2, max(ganancia_acumulada)], "\n" )
