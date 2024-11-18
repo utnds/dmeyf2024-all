@@ -220,6 +220,7 @@ AgregarVariables_IntraMes <- function(dataset) {
             mpagomiscuentas+
             mcomisiones_mantenimiento+
             mcomisiones_otras]
+  dataset[,t_prestamos := mprestamos_personales+mprestamos_prendarios+mprestamos_hipotecarios]
   dataset[,i_rentabilidad_prestamos := mrentabilidad_annual / t_prestamos]
   dataset[ ,ratio_ahorro :=   ifelse( (mtransferencias_recibidas + mpayroll + mpayroll2 + mcheques_depositados   )!=0, (mcuentas_saldo + mplazo_fijo_dolares + mplazo_fijo_pesos + minversion1_pesos + minversion1_dolares + minversion2) / ( mtransferencias_recibidas + mpayroll + mpayroll2 + mcheques_depositados   ), NA) ]
   
