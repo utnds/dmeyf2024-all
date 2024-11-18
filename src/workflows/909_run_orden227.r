@@ -1,5 +1,8 @@
 require("rlang")
 
+memory.limit(size = 10000) # Aumenta el límite de memoria a 10 GB (solo en Windows)
+
+
 # workflow que voy a correr
 PARAM <- "src/workflows/990_workflow_orden227_SEMI.r"
 
