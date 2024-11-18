@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-cat( "ETAPA  z2201_HT_lightgbm_gan.r  INIT\n")
+cat( "ETAPA  2201_HT_lightgbm_gan.r  INIT\n")
 
 # Hyperparameter Tuning  lightgbm
 
@@ -25,10 +25,13 @@ require("mlrMBO", quietly=TRUE)
 
 
 #cargo la libreria
-# args <- c( "~/labo2024ba" )
+#args <- c( "~/dmeyf2024" )
 args <- commandArgs(trailingOnly=TRUE)
 source( paste0( args[1] , "/src/lib/mlog.r" ) )
 source( paste0( args[1] , "/src/lib/action_lib.r" ) )
+
+source( "~/dmeyf2024/src/lib/mlog.r" ) 
+source( "~/dmeyf2024/src/lib/action_lib.r" ) 
 
 #------------------------------------------------------------------------------
 
