@@ -9,7 +9,7 @@ require("rpart.plot")
 setwd("~/buckets/b1/") # establezco la carpeta donde voy a trabajar
 
 # cargo el dataset
-dataset <- fread( "~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread( "~/datasets/conceptual_dataset_pequeno.csv")
 
 dir.create("./exp/", showWarnings = FALSE)
 dir.create("./exp/CN4110/", showWarnings = FALSE)
@@ -17,7 +17,7 @@ dir.create("./exp/CN4110/", showWarnings = FALSE)
 setwd("./exp/CN4110/")
 
 # uso esta semilla para los canaritos
-set.seed(102191)
+set.seed(524287)
 
 # agrego los siguientes canaritos
 for( i in 1:155 ) dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset)) ]
