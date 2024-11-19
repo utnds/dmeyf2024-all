@@ -15,16 +15,16 @@ require("yaml")
 
 # parametros experimento
 PARAM <- list()
-PARAM$experimento <- 3610
+PARAM$experimento <- "-Arb_Azarosos"
 
 # parametros rpart
 
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 100,
-  "minbucket" = 10,
-  "maxdepth" = 10
+  "minsplit" = 250,
+  "minbucket" = 50,
+  "maxdepth" = 12
 )
 
 # parametros  arbol
@@ -36,7 +36,7 @@ PARAM$feature_fraction <- 0.5
 # voy a generar 512 arboles,
 #  a mas arboles mas tiempo de proceso y MEJOR MODELO,
 #  pero ganancias marginales
-PARAM$num_trees_max <- 512
+PARAM$num_trees_max <- 512 
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
