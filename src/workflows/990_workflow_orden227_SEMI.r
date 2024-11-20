@@ -457,7 +457,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MbbbbachineLearning")
+  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="uva")
   FEhist_base()
