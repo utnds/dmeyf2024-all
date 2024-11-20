@@ -143,7 +143,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -457,12 +457,12 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="ninguno")
   FEintra_manual_base()
   DR_drifting_base(metodo="uva")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=1.5, desvio=1.5)
 
   ts9 <- TS_strategy_base9()
 
