@@ -150,8 +150,8 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
   param_local$Tendencias1$promedio <- FALSE
   param_local$Tendencias1$ratioavg <- FALSE
   param_local$Tendencias1$ratiomax <- FALSE
@@ -438,7 +438,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$envios_desde <- 10500L
   param_local$envios_hasta <- 12050L
-  param_local$envios_salto <-  250L
+  param_local$envios_salto <-  200L
   param_local$competition <- "utn-dm-ey-f-2024-vivencial"
 
   return( exp_correr_script( param_local ) ) # linea fija
