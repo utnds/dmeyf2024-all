@@ -278,7 +278,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202007, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
@@ -294,7 +294,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202007, 
+    202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
@@ -471,8 +471,8 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 200, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 100  # iteraciones inteligentes, apenas 10
+    semillerio = 20, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 20  # iteraciones inteligentes, apenas 10
   )
 
 
@@ -480,7 +480,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 200,   # cantidad de semillas finales
-    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
+    repeticiones_exp = 20  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts9) )
