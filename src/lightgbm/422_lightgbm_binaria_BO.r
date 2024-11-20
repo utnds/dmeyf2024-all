@@ -57,7 +57,7 @@ hs <- makeParamSet(
   makeIntegerParam("max_depth", lower = -1L, upper = 50L),
   makeNumericParam("bagging_fraction", lower = 0, upper = 1.0),
   makeIntegerParam("bagging_freq", lower = 0L, upper = 20L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
+  makeIntegerParam("envios", lower = 1000L, upper = 4000L)
   )
 
 #------------------------------------------------------------------------------
