@@ -438,7 +438,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$envios_desde <- 10500L
   param_local$envios_hasta <- 12050L
-  param_local$envios_salto <-   500L
+  param_local$envios_salto <-  250L
   param_local$competition <- "utn-dm-ey-f-2024-vivencial"
 
   return( exp_correr_script( param_local ) ) # linea fija
