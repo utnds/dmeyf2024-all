@@ -1,10 +1,12 @@
 # Corrida general del Workflow Semillerio
 # Orden 227 : Ni un paso atras
 
-# Se cambio CA=>MachineLearning / DR=>UVA / FeHist=>1lag / CN=>D=1.5-R=1.5
-#           undersampling=0.2 / ratioavg - ratiomax=TRUE
-#           TS=>param_local$final_train$undersampling <- 0.2
-#           201904, 201903 EXCLUYO POR MESES MAS ALEJADOS
+# Se cambio CA=>MachineLearning / DR=>UVA / FeHist=>1lag / CN=>D=1.75-R=1
+#           undersampling=DEFAULT / ratioavg - ratiomax=TRUE
+#           TS=>param_local$final_train$undersampling <- 0.20
+#           FM -> semillerio = 100,   # cantidad de semillas finales
+#           le borro ultimo a ultimo<-FErf_attributes_base()
+
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
@@ -285,13 +287,14 @@ TS_strategy_base9 <- function( pinputexps )
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
-    202005, 202004,
+    #202005, EXCLUYO POR PANDEMIA
+    #202004, EXCLUYO POR PANDEMIA
     202003, 202002, 202001,
     201912, 201911,
     # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906#,
+    201909, 201908, 201907, 201906,
     # 201905  Excluyo por variables rotas
-    #201904, 201903 EXCLUYO POR MESES MAS ALEJADOS
+    201904, 201903
   )
 
 
@@ -306,9 +309,9 @@ TS_strategy_base9 <- function( pinputexps )
     202003, 202002, 202001,
     201912, 201911,
     # 201910 Excluyo por variables rotas
-    201909, 201908, 201907, 201906#,
+    201909, 201908, 201907, 201906,
     # 201905  Excluyo por variables rotas
-    #201904, 201903 EXCLUYO POR MESES MAS ALEJADOS
+    201904, 201903
   )
 
 
@@ -471,8 +474,8 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   FEintra_manual_base()
   DR_drifting_base(metodo="UVA")
   FEhist_base()
-  ultimo <- FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=1.5, desvio=1.5)
+  FErf_attributes_base()#ultimo <- FErf_attributes_base()
+  CN_canaritos_asesinos_base(ratio=1, desvio=1.75)
 
   ts9 <- TS_strategy_base9()
 
@@ -486,7 +489,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 50,   # cantidad de semillas finales
+    semillerio = 100,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
