@@ -33,7 +33,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "HT42201"
+PARAM$experimento <- "2HT4220"
 
 PARAM$input$training <- c(202107) # los meses en los que vamos a entrenar
 
@@ -51,10 +51,24 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
-  makeIntegerParam("num_leaves", lower = 8L, upper = 1024L),
+  makeIntegerParam("num_leaves", lower = 4L, upper = 1500L),
   makeNumericParam("feature_fraction", lower = 0.1, upper = 1.0),
   makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
-  makeIntegerParam("envios", lower = 5000L, upper = 15000L)
+  makeIntegerParam("envios", lower = 5000L, upper = 15000L),
+  #Extras
+    makeIntegerParam("max_depth", lower = 5L, upper = 12L),
+  # Extras 2
+  # L2 regularización (penalización de Ridge)
+  makeNumericParam("lambda_l2", lower = 0.0, upper = 10.0),
+  # L1 regularización (penalización de Lasso)
+  makeNumericParam("lambda_l1", lower = 0.0, upper = 10.0),
+  # Tasa de caída de ejemplos en cada iteración (para el drop-out)
+  makeNumericParam("bagging_fraction", lower = 0.1, upper = 1.0),
+  # Frecuencia de bagging (cada cuántas iteraciones aplicar el bagging)
+  makeIntegerParam("bagging_freq", lower = 1L, upper = 10L),
+  # Fracción de ganancia acumulada mínima para dividir un nodo
+  makeNumericParam("min_gain_to_split", lower = 0.0, upper = 1.0),
+  makeIntegerParam("max_bin", lower = 31L, upper = 255L)
 )
 
 #------------------------------------------------------------------------------
@@ -137,7 +151,7 @@ EstimarGanancia_lightgbm <- function(x) {
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     verbosity = -100,
-    max_bin = 31, # por ahora, lo dejo fijo
+    # max_bin = 31, # por ahora, lo dejo fijo
     num_iterations = 9999, # valor grande, lo limita early_stopping_rounds
     force_row_wise = TRUE, # para evitar warning
     seed = ksemilla_azar1
