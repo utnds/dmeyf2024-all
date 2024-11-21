@@ -150,11 +150,11 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
   param_local$Tendencias1$ventana <- 6
   param_local$Tendencias1$tendencia <- TRUE
-  param_local$Tendencias1$minimo <- FALSE
-  param_local$Tendencias1$maximo <- FALSE
-  param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$minimo <- TRUE
+  param_local$Tendencias1$maximo <- TRUE
+  param_local$Tendencias1$promedio <- TRUE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
@@ -279,12 +279,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006, #  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910, # Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905, # Excluyo por variables rotas
     201904, 201903
   )
 
@@ -295,19 +295,19 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006, # Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910, # Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905, # Excluyo por variables rotas
     201904, 201903
   )
 
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.10
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -351,18 +351,18 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
-    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    # min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    # min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    # lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    # lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
 
     num_iterations = 9999L, # un numero muy grande
     early_stopping_base = 200L,
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    # bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    # pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    # neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
@@ -371,9 +371,19 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
     extra_trees = FALSE,
+    
+    # Parte variable nueva
+    min_gain_to_split = c(0L, 20L), # min_gain_to_split >= 0.0
+    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    lambda_l1 = c(0.0, 1000), # lambda_l1 >= 0.0
+    lambda_l2 = c(0.0, 1000), # lambda_l2 >= 0.0
+    bagging_fraction = c(0.1, 1.0), # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = c(0.1, 1.0), # 0.0 < pos_bagging_fraction <= 1.0
+    neg_bagging_fraction = c(0.1, 1.0), # 0.0 < neg_bagging_fraction <= 1.0
+    
     # Parte variable
-    learning_rate = c( 0.3, 0.8 ),
-    feature_fraction = c( 0.05, 0.95 ),
+    learning_rate = c( 0.01, 0.1 ),
+    feature_fraction = c( 0.5, 0.95 ),
 
     leaf_size_log = c( -10, -5),   # deriva en min_data_in_leaf
     coverage_log = c( -8, 0 )      # deriva en num_leaves
@@ -454,7 +464,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_sep_orden227_G1 <- function( pnombrewf )
+wf_SEMI_sep_orden227_G6 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
@@ -494,6 +504,6 @@ wf_SEMI_sep_orden227_G1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_SEMI_sep_orden227_G1()
+wf_SEMI_sep_orden227_G6()
 
 

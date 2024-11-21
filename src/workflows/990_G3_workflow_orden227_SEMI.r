@@ -279,12 +279,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006,  #Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910, #Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905,  #Excluyo por variables rotas
     201904, 201903
   )
 
@@ -454,13 +454,13 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_sep_orden227_G1 <- function( pnombrewf )
+wf_SEMI_sep_orden227_G3 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
 
-  #CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="ninguno")
   FEhist_base()
@@ -494,6 +494,6 @@ wf_SEMI_sep_orden227_G1 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_SEMI_sep_orden227_G1()
+wf_SEMI_sep_orden227_G3()
 
 
