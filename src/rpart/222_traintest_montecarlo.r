@@ -4,21 +4,22 @@ gc() # Garbage Collection
 require("data.table")
 require("rpart")
 require("parallel")
-require("primes")
-require("yaml")
-
 
 PARAM <- list()
+# reemplazar por las propias semillas
+PARAM$semillas <- c(153071, 303089, 453197, 603221, 753241)
 
-PARAM$qsemillas <- 200
+# elegir SU dataset comentando/ descomentando
+PARAM$dataset_nom <- "~/datasets/vivencial_dataset_pequeno.csv"
+# PARAM$dataset_nom <- "~/datasets/conceptual_dataset_pequeno.csv"
 
 PARAM$training_pct <- 70L  # entre  1L y 99L 
 
 PARAM$rpart <- list (
-  "cp" = -1,
-  "minsplit" = 800,
-  "minbucket" = 320,
-  "maxdepth" = 6
+  "cp" = -1, # complejidad minima
+  "minsplit" = 170, # minima cantidad de regs en un nodo para hacer el split
+  "minbucket" = 70, # minima cantidad de regs en una hoja
+  "maxdepth" = 7 # profundidad máxima del arbol
 )
 
 #------------------------------------------------------------------------------
@@ -96,19 +97,8 @@ ArbolEstimarGanancia <- function(semilla, param_basicos) {
 
 setwd("~/buckets/b1/") # Establezco el Working Directory
 
-#cargo miAmbiente
-miAmbiente <- read_yaml( "~/buckets/b1/miAmbiente.yml" )
-
-
-# genero numeros primos
-primos <- generate_primes(min = 100000, max = 1000000)
-set.seed(miAmbiente$semilla_primigenia) # inicializo 
-# me quedo con PARAM$qsemillas   semillas
-PARAM$semillas <- sample(primos, PARAM$qsemillas )
-
-
-# cargo dataset
-dataset <- fread( miAmbiente$dataset_pequeno )
+# cargo los datos
+dataset <- fread(PARAM$dataset_nom)
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
@@ -123,9 +113,19 @@ salidas <- mcmapply(ArbolEstimarGanancia,
   mc.cores = detectCores()
 )
 
+# muestro la lista de las salidas en testing
+#  para la particion realizada con cada semilla
+salidas
 
 # paso la lista a vector
 tb_salida <- rbindlist(salidas)
 
-cat( "ganancia media :", tb_salida[, mean(ganancia_test)], "\n" )
+print( tb_salida )
 
+# finalmente calculo la media (promedio)  de las ganancias
+cat( "ganancia promedio: ", tb_salida[, mean(ganancia_test)], "\n" )
+
+# calculo todos los promedios
+cat(  "ganancia desvio estandar: ", tb_salida[, sd(ganancia_test)], "\n" )
+
+# desvio estandar Distribucion Binomial   sqrt( n * p * (1-p) )
