@@ -466,7 +466,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 60 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
