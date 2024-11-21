@@ -291,11 +291,11 @@ TS_strategy_base9 <- function( pinputexps )
   )
 
 
-  param_local$train$testing <- c(202107,202106)
-  param_local$train$validation <- c(202105)
-
+  param_local$train$testing <- c(202107)
+  param_local$train$validation <- c(202106)
+  
   param_local$train$training <- c(
-    202104, 202103, 202102, 202101, 
+    202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 
     #202010, 202009, 202008, Excluyo por pandemia
     202007, 
@@ -477,6 +477,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=1, desvio=1)
 
   ts9 <- TS_strategy_base9()
 
