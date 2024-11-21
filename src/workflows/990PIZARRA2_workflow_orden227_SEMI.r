@@ -1,6 +1,10 @@
 # Corrida general del Workflow Semillerio
 # Orden 227 : Ni un paso atras
 
+# Se cambio CA=>MachineLearning / DR=>UVA / FeHist=>1lag / CN=>D=1.75-R=1
+#           undersampling=DEFAULT / ratioavg - ratiomax=TRUE
+#           TS=>param_local$final_train$undersampling <- 0.50
+
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
@@ -107,7 +111,7 @@ FEintra_manual_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z1301_FE_intrames_manual.r"
+  param_local$meta$script <- "/src/wf-etapas/1301PIZARRA_FE_intrames_manual.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -143,7 +147,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -153,8 +157,8 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
   param_local$Tendencias1$promedio <- FALSE
-  param_local$Tendencias1$ratioavg <- FALSE
-  param_local$Tendencias1$ratiomax <- FALSE
+  param_local$Tendencias1$ratioavg <- TRUE
+  param_local$Tendencias1$ratiomax <- TRUE
 
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
@@ -274,13 +278,15 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 0.10
+  param_local$final_train$undersampling <- 0.50
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
+    #202005, EXCLUYO POR PANDEMIA
+    #202004, EXCLUYO POR PANDEMIA
+    202003, 202002, 202001,
     201912, 201911,
     # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
@@ -296,7 +302,8 @@ TS_strategy_base9 <- function( pinputexps )
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
     # 202006  Excluyo por variables rotas
-    202005, 202004, 202003, 202002, 202001,
+    #202005, 202004, EXCLUYO POR PANDEMIA
+    202003, 202002, 202001,
     201912, 201911,
     # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
@@ -307,7 +314,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 0.10
+  param_local$train$undersampling <- 0.20
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -440,7 +447,7 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
   param_local$envios_desde <- 9000L
-  param_local$envios_hasta <- 13000L
+  param_local$envios_hasta <- 13500L
   param_local$envios_salto <-   500L
   param_local$competition <- "utn-dm-ey-f-2024-vivencial"
 
@@ -462,10 +469,10 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="UVA")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=1, desvio=1.75)
 
   ts9 <- TS_strategy_base9()
 
