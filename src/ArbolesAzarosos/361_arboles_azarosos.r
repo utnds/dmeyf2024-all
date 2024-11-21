@@ -22,8 +22,8 @@ PARAM$experimento <- 3610
 #  cargue aqui los hiperparametros elegidos
 PARAM$rpart <- data.table( 
   "cp" = -1,
-  "minsplit" = 400,
-  "minbucket" = 20,
+  "minsplit" = 25,
+  "minbucket" = 10,
   "maxdepth" = 4
 )
 
@@ -148,6 +148,7 @@ for( icorrida in seq(nrow(PARAM$rpart)) ){
       # preparo todo para el submit
       comentario <- paste0( "'",
         "trees=", arbolito,
+        " feature_fraction=", PARAM$feature_fraction, 
         " cp=", PARAM$rpart$cp,
         " minsplit=", PARAM$rpart$minsplit,
         " minbucket=", PARAM$rpart$minbucket,
@@ -164,7 +165,7 @@ for( icorrida in seq(nrow(PARAM$rpart)) ){
 
       ganancia <- system( comando, intern=TRUE )
       cat( paste0( ganancia, "\t", nom_arch_kaggle, "\n"),
-        file="tb_ganancias_f1.txt",
+        file="tb_ganancias.txt",
         append=TRUE
       )
 

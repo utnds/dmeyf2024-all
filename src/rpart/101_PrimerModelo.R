@@ -11,7 +11,7 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
@@ -22,10 +22,10 @@ modelo <- rpart(
     formula = "clase_ternaria ~ .",
     data = dtrain, # los datos donde voy a entrenar
     xval = 0,
-    cp = -0.3, # esto significa no limitar la complejidad de los splits
+    cp = -0.1, # esto significa no limitar la complejidad de los splits
     minsplit = 100, # minima cantidad de registros para que se haga el split
     minbucket = 10, # tamaño minimo de una hoja
-    maxdepth = 3  # profundidad maxima del arbol
+    maxdepth = 10  # profundidad maxima del arbol
 )
 
 
