@@ -460,7 +460,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="Ninguno")
+  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="UVA")
   FEhist_base()
@@ -471,7 +471,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 60, # semillerio dentro de la Bayesian Optim
+    semillerio = 50, # semillerio dentro de la Bayesian Optim
     bo_iteraciones = 10  # iteraciones inteligentes, apenas 10
   )
 
@@ -479,7 +479,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 60,   # cantidad de semillas finales
+    semillerio = 50,   # cantidad de semillas finales
     repeticiones_exp = 1  # cantidad de repeticiones del semillerio
   )
 
