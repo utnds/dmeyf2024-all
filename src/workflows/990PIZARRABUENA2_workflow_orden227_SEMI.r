@@ -8,6 +8,8 @@
 #           ht <- HT_tuning_semillerio(
 #             semillerio = 50, # semillerio dentro de la Bayesian Optim
 #             bo_iteraciones = 100  # iteraciones inteligentes, apenas 10
+           
+#           repeticiones_exp = 30  # cantidad de repeticiones del semillerio
 
 
 # limpio la memoria
@@ -492,7 +494,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 100,   # cantidad de semillas finales
-    repeticiones_exp = 10  # cantidad de repeticiones del semillerio
+    repeticiones_exp = 30  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts9) )
