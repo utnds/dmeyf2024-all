@@ -14,7 +14,7 @@ cat( "ETAPA  z2402_SC_scoring_lightgbm_semillerio.r  INIT\n")
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
-, verbose= FALSE, full = TRUE) # garbage collection
+gc(verbose= FALSE, full = TRUE) # garbage collection
 
 require("data.table", quietly=TRUE)
 require("yaml", quietly=TRUE)
