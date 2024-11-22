@@ -1,11 +1,13 @@
 # Corrida general del Workflow Semillerio
 # Orden 227 : Ni un paso atras
 
-# Se cambio CA=>MachineLearning / DR=>UVA / FeHist=>1lag / CN=>D=1.75-R=1
+# Se cambio CA=>MachineLearning / DR=>UVA / FeHist=>1lag / 
 #           undersampling=DEFAULT / ratioavg - ratiomax=TRUE
 #           TS=>param_local$final_train$undersampling <- 0.20
 #           FM -> semillerio = 100,   # cantidad de semillas finales
-
+#           ht <- HT_tuning_semillerio(
+#             semillerio = 20, # semillerio dentro de la Bayesian Optim
+#             bo_iteraciones = 30  # iteraciones inteligentes, apenas 10
 
 
 # limpio la memoria
@@ -481,8 +483,8 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 50, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 10  # iteraciones inteligentes, apenas 10
+    semillerio = 20, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 30  # iteraciones inteligentes, apenas 10
   )
 
 
@@ -490,7 +492,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
     semillerio = 100,   # cantidad de semillas finales
-    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
+    repeticiones_exp = 10  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts9) )
