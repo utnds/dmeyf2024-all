@@ -476,8 +476,8 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
-  CN_canaritos_asesinos_base(ratio=1, desvio=1)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  #CN_canaritos_asesinos_base(ratio=1, desvio=1)
 
   ts9 <- TS_strategy_base9()
 
