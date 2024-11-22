@@ -3,7 +3,7 @@
 # si hay un empate ( dos máximos) se queda con la que esta primera en el vector
 
 
-set.seed( 102191 )
+set.seed( 153071 )
 
 # calcula cuantos encestes logra una jugadora con indice de enceste prob
 # que hace qyt tiros libres
@@ -14,7 +14,7 @@ ftirar  <- function( prob, qty ){
 
 
 # defino los jugadoras
-taurasi    <- 0.7
+taurasi    <- 0.60
 peloton    <- ( 501:599 ) / 1000
 jugadoras  <- c( peloton, taurasi) # intencionalmente la mejor esta al final
 
