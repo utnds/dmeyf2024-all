@@ -11,7 +11,7 @@ require("rpart.plot")
 setwd("~/buckets/b1") # Establezco el Working Directory
 
 # cargo el dataset pequeno vivencial del disco local
-dataset <- fread("~/datasets/vivencial_dataset_pequeno.csv")
+dataset <- fread("~/datasets/conceptual_dataset_pequeno.csv")
 
 dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
@@ -35,7 +35,7 @@ prp(modelo,
     branch = 1, type = 4, varlen = 0, faclen = 0
 )
 
-
+dapply = dapply[, fold := 2]
 # aplico el modelo a los datos nuevos
 prediccion <- predict(
     object = modelo,
@@ -61,6 +61,6 @@ dir.create("./exp/KA2001")
 
 # solo los campos para Kaggle
 fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_001_viv.csv",
+        file = "./exp/KA2001/K101_005con.csv",
         sep = ","
 )
