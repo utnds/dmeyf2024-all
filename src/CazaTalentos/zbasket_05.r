@@ -1,6 +1,6 @@
 
 
-set.seed( 102191 )
+set.seed( 153071  )
 
 # calcula cuantos encestes logra una jugadora con indice de enceste prob
 # que hace qyt tiros libres
@@ -11,7 +11,7 @@ ftirar  <- function( prob, qty ){
 
 
 # defino las jugadoras
-jugadoras  <- rep( 0.7, 100 )
+jugadoras  <- rep( 0.7, 200 )
 
 
 
