@@ -291,11 +291,11 @@ TS_strategy_base9 <- function( pinputexps )
   )
 
 
-  param_local$train$testing <- c(202107)
-  param_local$train$validation <- c(202106)
+  param_local$train$testing <- c(202107,202106)
+  param_local$train$validation <- c(202105)
   
   param_local$train$training <- c(
-    202105, 202104, 202103, 202102, 202101, 
+    202104, 202103, 202102, 202101, 
     202012, 202011, 
   #  202010, 202009, 202008, Excluyo por pandemia
     202007, 
