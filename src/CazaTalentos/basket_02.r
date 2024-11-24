@@ -11,8 +11,9 @@ ftirar  <- function( prob, qty ){
 
 
 # defino las jugadoras
-taurasi    <- 0.7
-peloton    <- ( 501:599 ) / 1000
+taurasi    <- 07
+peloton    <- ( 501:799 ) / 1000
+
 jugadoras  <- c( taurasi, peloton )
 
 # veo que tiene el vector
