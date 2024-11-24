@@ -279,7 +279,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 
-    202010, 202009, 202008, #Excluyo por pandemia
+   # 202010, 202009, 202008, Excluyo por pandemia
     202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
@@ -297,7 +297,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 
-    202010, 202009, 202008, #Excluyo por pandemia
+  #  202010, 202009, 202008, Excluyo por pandemia
     202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
