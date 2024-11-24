@@ -1,7 +1,10 @@
 require("rlang")
 
+# CA => EstadisticaClasica
+# DR => UVA
+
 # workflow que voy a correr
-PARAM <- "src/workflows/990PIZARRA_workflow_orden227_SEMI.r"
+PARAM <- "src/workflows/527UVAEC_workflow_base_f202107_viv.r"
 
 envg <- env()
 
