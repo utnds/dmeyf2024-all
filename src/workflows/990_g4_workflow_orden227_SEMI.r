@@ -157,9 +157,9 @@ FEhist_base <- function( pinputexps)
   param_local$Tendencias1$ratiomax <- FALSE
 
   # no me engraso las manos con las tendencias de segundo orden
-  param_local$Tendencias2$run <- FALSE
+  param_local$Tendencias2$run <- TRUE
   param_local$Tendencias2$ventana <- 12
-  param_local$Tendencias2$tendencia <- FALSE
+  param_local$Tendencias2$tendencia <- TRUE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
   param_local$Tendencias2$promedio <- FALSE
@@ -279,12 +279,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006,  #Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910, #Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905,  #Excluyo por variables rotas
     201904, 201903
   )
 
@@ -295,12 +295,12 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
     202012, 202011, 202010, 202009, 202008, 202007, 
-    # 202006  Excluyo por variables rotas
+    202006,  #Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
-    # 201910 Excluyo por variables rotas
+    201910, #Excluyo por variables rotas
     201909, 201908, 201907, 201906,
-    # 201905  Excluyo por variables rotas
+    201905,  #Excluyo por variables rotas
     201904, 201903
   )
 
@@ -454,15 +454,15 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 # Que predice 202107 donde conozco la clase
 # y ya genera graficos
 
-wf_SEMI_sep_orden227 <- function( pnombrewf )
+wf_SEMI_sep_orden227_g4 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  #CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="UVA")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -494,6 +494,6 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 # Aqui comienza el programa
 
 # llamo al workflow con future = 202108
-wf_SEMI_sep_orden227()
+wf_SEMI_sep_orden227_g4()
 
 
