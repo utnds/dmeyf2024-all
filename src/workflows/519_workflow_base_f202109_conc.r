@@ -335,11 +335,11 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
     
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
     is_unbalance = FALSE, #
-    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    bagging_fraction = c(0.0, 1.0), # 0.0 < bagging_fraction <= 1.0
+    pos_bagging_fraction = c(0.0, 1.0), # 0.0 < pos_bagging_fraction <= 1.0
+    scale_pos_weight = c(1L, 200L,"integer"), # scale_pos_weight > 0.0
+    neg_bagging_fraction = c(0.0, 1.0), # 0.0 < neg_bagging_fraction <= 1.0
     
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
     max_drop = 50, # <=0 means no limit
@@ -351,6 +351,7 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
     feature_fraction = c( 0.5, 0.9 ),
     num_leaves = c( 8L, 2048L,  "integer" ),
     min_data_in_leaf = c( 20L, 2000L, "integer" )
+
   )
   
   
@@ -445,7 +446,7 @@ wf_septiembre <- function( pnombrewf )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
   
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 200 )  # iteraciones inteligentes
   
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )

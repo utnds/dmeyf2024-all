@@ -143,7 +143,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -278,7 +278,7 @@ TS_strategy_base9 <- function( pinputexps )
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
+    202012, 202011, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
@@ -294,14 +294,14 @@ TS_strategy_base9 <- function( pinputexps )
 
   param_local$train$training <- c(
     202105, 202104, 202103, 202102, 202101, 
-    202012, 202011, 202010, 202009, 202008, 202007, 
+    202012, 202011, 202007, 
     # 202006  Excluyo por variables rotas
     202005, 202004, 202003, 202002, 202001,
     201912, 201911,
     # 201910 Excluyo por variables rotas
     201909, 201908, 201907, 201906,
     # 201905  Excluyo por variables rotas
-    201904, 201903
+    201904, 201903, 201902, 201901
   )
 
 
@@ -439,10 +439,10 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 10500L
-  param_local$envios_hasta <- 12050L
-  param_local$envios_salto <-   500L
-  param_local$competition <- "utn-dm-ey-f-2024-vivencial"
+  param_local$envios_desde <-  1000L
+  param_local$envios_hasta <-  3000L
+  param_local$envios_salto <-   50L
+  param_local$competition <- "utn-dm-ey-f-2024-conceptual"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -460,9 +460,9 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   DT_incorporar_dataset_competencia2024()
 
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Ninguno")
   FEintra_manual_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="deflacion")
   FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
@@ -471,16 +471,16 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
 
   # la Bayesian Optimization con el semillerio dentro
   ht <- HT_tuning_semillerio(
-    semillerio = 50, # semillerio dentro de la Bayesian Optim
-    bo_iteraciones = 10  # iteraciones inteligentes, apenas 10
+    semillerio = 20, # semillerio dentro de la Bayesian Optim
+    bo_iteraciones = 20  # iteraciones inteligentes, apenas 10
   )
 
 
   fm <- FM_final_models_lightgbm_semillerio( 
     c(ht, ts9), # los inputs
     ranks = c(1), # 1 = el mejor de la bayesian optimization
-    semillerio = 50,   # cantidad de semillas finales
-    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
+    semillerio = 200,   # cantidad de semillas finales
+    repeticiones_exp = 20  # cantidad de repeticiones del semillerio
   )
 
   SC_scoring_semillerio( c(fm, ts9) )
