@@ -189,10 +189,10 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 25,
-    num_leaves  = 20,
-    min_data_in_leaf = 1200,
-    feature_fraction_bynode  = 0.1,
+    num_iterations = 20,
+    num_leaves  = 16,
+    min_data_in_leaf = 1000,
+    feature_fraction_bynode  = 0.2,
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
@@ -216,7 +216,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 
     pos_bagging_fraction = 1.0,
     neg_bagging_fraction = 1.0,
-    is_unbalance = FALSE,
+    is_unbalance = TRUE,
     scale_pos_weight = 1.0,
 
     drop_rate = 0.1,
@@ -363,7 +363,7 @@ HT_tuning_semillerio <- function( pinputexps, semillerio, bo_iteraciones, bypass
     bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
     pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
     neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = FALSE, #
+    is_unbalance = TRUE, #
     scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
     drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
@@ -439,10 +439,10 @@ KA_evaluate_kaggle_semillerio <- function( pinputexps )
 
   param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
 
-  param_local$envios_desde <- 1600L
-  param_local$envios_hasta <- 2400L
-  param_local$envios_salto <-   200L
-  param_local$competition <- "utn-dm-ey-f-2024-conceptual"
+  param_local$envios_desde <- 10500L
+  param_local$envios_hasta <- 12050L
+  param_local$envios_salto <-   500L
+  param_local$competition <- "utn-dm-ey-f-2024-vivencial"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -463,7 +463,7 @@ wf_SEMI_sep_orden227 <- function( pnombrewf )
   CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
   DR_drifting_base(metodo="deflacion")
-  FEh <- t_base()
+  FEhist_base()
   ultimo <- FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
