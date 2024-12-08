@@ -419,41 +419,25 @@ SC_scoring <- function( pinputexps )
 # proceso KA_evaluate_kaggle
 # deterministico, SIN random
 
-# KA_evaluate_kaggle <- function( pinputexps )
-# {
-#   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-# 
-#   param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
-# 
-#   param_local$semilla <- NULL  # no usa semilla, es deterministico
-# 
-#   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
-# 
-#   param_local$envios_desde <-  10000L
-#   param_local$envios_hasta <-  12500L
-#   param_local$envios_salto <-    500L
-#   param_local$competition <- "utn-dm-ey-f-2024-vivencial"
-# 
-#   return( exp_correr_script( param_local ) ) # linea fija
-# }
+ KA_evaluate_kaggle <- function( pinputexps )
+ {
+   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+ 
+   param_local$meta$script <- "/src/wf-etapas/z2601_KA_evaluate_kaggle.r"
+ 
+   param_local$semilla <- NULL  # no usa semilla, es deterministico
+ 
+   param_local$isems_submit <- 1:20 # misterioso parametro, no preguntar
+ 
+   param_local$envios_desde <-  10000L
+   param_local$envios_hasta <-  12500L
+   param_local$envios_salto <-    500L
+   param_local$competition <- "utn-dm-ey-f-2024-vivencial"
+ 
+   return( exp_correr_script( param_local ) ) # linea fija
+ }
 
-KA_evaluate_kaggle <- function( pinputexps )
-{
-  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
-  
-  param_local$meta$script <- "/src/wf-etapas/z2602_KA_evaluate_kaggle_SEMI.r"
-  
-  param_local$semilla <- NULL  # no usa semilla, es deterministico
-  
-  param_local$irepes_submit <- 1:20 # misterioso parametro, no preguntar
-  
-  param_local$envios_desde <- 1600L
-  param_local$envios_hasta <- 2200L
-  param_local$envios_salto <-   200L
-  param_local$competition <- "utn-2024-especial"   # Competencia ESPECIAL
-  
-  return( exp_correr_script( param_local ) ) # linea fija
-}
+
 
 KA_evaluate_kaggle_semillerio <- function( pinputexps )
 {
