@@ -2,7 +2,11 @@
 
 # limpio la memoria
 rm(list = ls(all.names = TRUE)) # remove all objects
-gc(full = TRUE) # garbage collection
+gc(full = TRUE, verbose= FALSE) # garbage collection
+
+dir.create("~/buckets/b1/exp/modelosimple/", showWarnings = FALSE)
+setwd( "~/buckets/b1/exp/modelosimple/" )
+
 
 require("rlang")
 require("yaml")
@@ -141,7 +145,7 @@ FEhist_base <- function( pinputexps)
   param_local$meta$script <- "/src/wf-etapas/z1501_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
@@ -235,7 +239,6 @@ FErf_attributes_base <- function( pinputexps,
 #------------------------------------------------------------------------------
 # Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
-
 CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
@@ -274,7 +277,7 @@ TS_strategy_base9 <- function( pinputexps )
   
   param_local$future <- c(202109)
 
-  param_local$final_train$undersampling <- 1.0
+  param_local$final_train$undersampling <- 0.8
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
   param_local$final_train$training <- c(
     202107, 202106, 202105, 202104, 202103, 202102, 
@@ -305,7 +308,7 @@ TS_strategy_base9 <- function( pinputexps )
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
-  param_local$train$undersampling <- 1.0
+  param_local$train$undersampling <- 0.8
   param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
@@ -338,36 +341,37 @@ HT_tuning_base <- function( pinputexps, bo_iteraciones, bypass=FALSE)
   param_local$lgb_param <- list(
     boosting = "gbdt", # puede ir  dart  , ni pruebe random_forest
     objective = "binary",
-    metric = "custom",
+    metric = "auc",
     first_metric_only = TRUE,
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
-    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
-    min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    # max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    #  min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    #  min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
+    #  lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    #  lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
-    num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
+    # num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
-    bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
-    pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
-    neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
-    is_unbalance = FALSE, #
-    scale_pos_weight = 1.0, # scale_pos_weight > 0.0
+    # bagging_fraction = 1.0, # 0.0 < bagging_fraction <= 1.0
+    # pos_bagging_fraction = 1.0, # 0.0 < pos_bagging_fraction <= 1.0
+    # neg_bagging_fraction = 1.0, # 0.0 < neg_bagging_fraction <= 1.0
+    # is_unbalance = FALSE, #
+    # scale_pos_weight = 1.0, # scale_pos_weight > 0.0
 
-    drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
-    max_drop = 50, # <=0 means no limit
-    skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
+    # drop_rate = 0.1, # 0.0 < neg_bagging_fraction <= 1.0
+    # max_drop = 50, # <=0 means no limit
+    # skip_drop = 0.5, # 0.0 <= skip_drop <= 1.0
 
-    extra_trees = FALSE,
+    # extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
-    feature_fraction = c( 0.5, 0.9 ),
+    seed = 100103,
+    learning_rate = 0.03,
+    feature_fraction = 0.5,
     num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    min_data_in_leaf = c( 16L, 2048, "integer" )
   )
 
 
@@ -478,13 +482,13 @@ wf_septiembre <- function( pnombrewf )
 
   FErf_attributes_base( arbolitos= 20,
     hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
+    datos_por_hoja= 1708,
     mtry_ratio= 0.2
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
-  ht <- HT_tuning_base( bo_iteraciones = 50 )  # iteraciones inteligentes
+  ht <- HT_tuning_base( bo_iteraciones = 20 )  # iteraciones inteligentes
 
   fm <- FM_final_models_lightgbm( c(ht, ts9), ranks=c(1), qsemillas=20 )
   SC_scoring( c(fm, ts9) )
