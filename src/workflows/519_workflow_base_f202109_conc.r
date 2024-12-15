@@ -432,15 +432,15 @@ wf_septiembre <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="Ninguno")
+  CA_catastrophe_base( metodo="MachineLearning")
   FEintra_manual_base()
-  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_simple")
   FEhist_base()
 
-  FErf_attributes_base( arbolitos= 20,
-    hojas_por_arbol= 16,
-    datos_por_hoja= 1000,
-    mtry_ratio= 0.2
+  FErf_attributes_base( arbolitos= 50,
+    hojas_por_arbol= 32,
+    datos_por_hoja= 500,
+    mtry_ratio= 0.3
   )
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
